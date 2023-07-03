@@ -1,4 +1,5 @@
 module.exports = {
+  extends: "standard",
   env: {
     browser: true,
     es2021: true,
@@ -10,7 +11,7 @@ module.exports = {
   },
   plugins: ["vue"],
   rules: {
-    "vue/multi-word-component-name": [
+    "vue/multi-word-component-names": [
       "error",
       {
         ignores: ["Home"],
