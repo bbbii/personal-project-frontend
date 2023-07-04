@@ -12,11 +12,15 @@
                   v-model="email"
                   label="E-mail"
                   :rules="email_rule"
-                  :disabled="false"
+                  :disabled="emailPass"
                   required
                 >
                   <template v-slot:append>
-                    <v-btn style="margin: 4px" @click="checkDuplicateEmail">
+                    <v-btn
+                      style="margin: 4px"
+                      @click="checkDuplicateEmail"
+                      :disabled="emailPass || !isEmailValid"
+                    >
                       E-mail<br />중복확인
                     </v-btn>
                   </template>
@@ -113,6 +117,11 @@ export default {
     createAccount() {
       const { email, password } = this;
       this.$emit("submit", { email, password });
+    },
+  },
+  computed: {
+    isEmailValid() {
+      return this.email_rule[1](this.email) === true;
     },
   },
 };
