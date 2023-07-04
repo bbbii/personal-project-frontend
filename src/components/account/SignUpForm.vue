@@ -4,7 +4,7 @@
       <v-row justify="center">
         <v-col cols="auto">
           <v-card width="500">
-            <v-card-text class="text-center px-12 py-16">
+            <v-card-text class="text-center px-16 py-16">
               <v-form @submit.prevent="createAccount">
                 <h1>회원가입</h1>
                 <v-text-field
@@ -16,7 +16,9 @@
                   required
                 >
                   <template v-slot:append>
-                    <button @click="checkDuplicateEmail">E-mail<br />중복확인</button>
+                    <v-btn style="margin: 4px" @click="checkDuplicateEmail">
+                      E-mail<br />중복확인
+                    </v-btn>
                   </template>
                 </v-text-field>
                 <v-text-field
@@ -78,7 +80,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions("AccountModule", ["requestSpringToCheckEmailDuplication"]),
+    ...mapActions("accountModule", ["requestSpringToCheckEmailDuplication"]),
     onSubmit() {
       if (this.$refs.form.validate()) {
         const { email } = this;
@@ -98,9 +100,9 @@ export default {
 
       if (emailValid) {
         const { email } = this;
-        console.log("before actions - email: " + email);
-        this.emailPass = await this.requestSpringToCheckEmailDuplication(email);
-        console.log("after actions - email: " + email);
+        // console.log("before actions - email: " + this.email);
+        this.emailPass = await this.requestSpringToCheckEmailDuplication({ email });
+        // console.log("after actions - email: " + this.email);
       }
     },
     isFormValid() {
