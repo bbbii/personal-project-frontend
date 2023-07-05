@@ -30,10 +30,10 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("signInUserInfo") == null) {
-      this.isSignIn = false;
-    } else {
+    if (localStorage.getItem("signInUserInfo")) {
       this.isSignIn = true;
+    } else {
+      this.isSignIn = false;
     }
   },
 };

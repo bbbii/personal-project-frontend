@@ -2,7 +2,7 @@
   <nav>
     <v-app-bar color="blue darken-1">
       <v-app-bar-nav-icon @click="navigation_drawer = !navigation_drawer" />
-      <button @click="goToList">
+      <button @click="goToHome">
         <v-toolbar-title>
           <span style="color: white">
             <b> Personal Project </b>
@@ -10,13 +10,22 @@
         </v-toolbar-title>
       </button>
       <v-spacer></v-spacer>
-      <v-btn v-if="isSignin" @click="logout">
-        <span>로그아웃</span>
-        <v-icon>mdi-exit-to-app</v-icon>
-      </v-btn>
-      <v-btn v-else @click="signIn">
-        <v-icon>mdi-exit-to-app</v-icon>
-      </v-btn>
+      <div v-if="isSignIn">
+        <v-btn @click="signOut">
+          <v-icon>mdi-logout</v-icon>
+          로그아웃
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-btn @click="signUp">
+          <v-icon>mdi-account-circle</v-icon>
+          회원가입
+        </v-btn>
+        <v-btn @click="signIn">
+          <v-icon>mdi-login</v-icon>
+          로그인
+        </v-btn>
+      </div>
     </v-app-bar>
 
     <v-navigation-drawer app v-model="navigation_drawer">
@@ -31,11 +40,21 @@
       <v-list>
         <v-list-item>
           <v-list-item-action>
-            <v-icon>mdi-cart-outline</v-icon>
+            <v-icon>mdi-vuetify</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
-              <router-link :to="{ name: 'home' }"> 상품 조회하기 </router-link>
+              <router-link :to="{ name: 'home' }"> 메뉴1 </router-link>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>mdi-vuetify</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              <router-link :to="{ name: 'home' }"> 메뉴2 </router-link>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -43,38 +62,47 @@
     </v-navigation-drawer>
   </nav>
 </template>
+
 <script>
 export default {
   data() {
     return {
       navigation_drawer: false,
-      isSignin: false,
+      isSignIn: false,
       accountId: 0,
     };
   },
   methods: {
-    logout() {
-      this.isSignin = false;
-      localStorage.clear();
-      this.$router.push({
-        name: "home",
-      });
-      location.reload().catch(() => {
-        location.reload();
-      });
+    signUp() {
+      this.$router.push("/sign-up").catch(() => {});
     },
-    goToList() {
-      this.$router.push({
-        name: "ProductListPage",
-      });
+    signIn() {
+      this.$router.push("/sign-in").catch(() => {});
+    },
+    async signOut() {
+      this.isSignIn = false;
+      localStorage.clear();
+      await this.$router.push("/").catch(() => {});
+    },
+    goToHome() {
+      this.$router.push("/").catch(() => {});
     },
   },
   mounted() {
-    this.accountId = localStorage.getItem("signinUserId");
-    if (this.accountId > 0) {
-      this.isSignin = true;
+    this.accountId = localStorage.getItem("signInUserInfo");
+    if (this.accountId) {
+      console.log("도착");
+      this.isSignIn = true;
     }
   },
 };
 </script>
-<style lang=""></style>
+
+<style scoped>
+.v-btn {
+  margin: 4px;
+}
+.v-icon {
+  margin: 4px;
+}
+</style>
