@@ -18,7 +18,19 @@ export default {
         }
       })
       .catch((res) => {
-        alert("문제 발생");
+        alert("이메일체크 문제 발생");
+      });
+  },
+  requestRegisterAccountToSpring({}, payload) {
+    const { email, password } = payload;
+    return axiosInstances.springAxiosInst
+      .post("/account/sign-up", { email, password })
+      .then((res) => {
+        alert("회원 가입 완료");
+        return res.data;
+      })
+      .catch(() => {
+        alert("회원가입 문제 발생");
       });
   },
 };
