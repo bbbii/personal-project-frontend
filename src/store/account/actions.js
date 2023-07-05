@@ -33,4 +33,22 @@ export default {
         alert("회원가입 문제 발생");
       });
   },
+  requestSpringToSignIn({}, payload) {
+    const { email, password } = payload;
+    return axiosInstances.springAxiosInst
+      .post("/account/sign-in", { email, password })
+      .then((res) => {
+        if (res.data.userToken) {
+          alert("로그인 완료");
+          localStorage.setItem("signInUserInfo", res.data.userToken);
+          return true;
+        } else {
+          alert("이메일 또는 비밀번호를 확인해주세요");
+          return false;
+        }
+      })
+      .catch(() => {
+        alert("로그인 문제 발생");
+      });
+  },
 };
