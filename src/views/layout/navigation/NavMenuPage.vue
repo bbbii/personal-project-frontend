@@ -9,23 +9,21 @@
           </span>
         </v-toolbar-title>
       </button>
+
       <v-spacer></v-spacer>
-      <div v-if="isSignIn">
-        <v-btn @click="signOut">
-          <v-icon>mdi-logout</v-icon>
-          로그아웃
-        </v-btn>
-      </div>
-      <div v-else>
-        <v-btn @click="signUp">
-          <v-icon>mdi-account-circle</v-icon>
-          회원가입
-        </v-btn>
-        <v-btn @click="signIn">
-          <v-icon>mdi-login</v-icon>
-          로그인
-        </v-btn>
-      </div>
+
+      <v-btn v-if="!isSignIn" @click="signUp">
+        <v-icon>mdi-account-circle</v-icon>
+        회원가입
+      </v-btn>
+      <v-btn v-if="!isSignIn" @click="signIn">
+        <v-icon>mdi-login</v-icon>
+        로그인
+      </v-btn>
+      <v-btn v-if="isSignIn" @click="signOut">
+        <v-icon>mdi-logout</v-icon>
+        로그아웃
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer app v-model="navigation_drawer">
