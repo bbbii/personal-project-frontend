@@ -22,9 +22,9 @@ export default {
       });
   },
   requestRegisterAccountToSpring({}, payload) {
-    const { email, password } = payload;
+    const { email, password, roleType } = payload;
     return axiosInstances.springAxiosInst
-      .post("/account/sign-up", { email, password })
+      .post("/account/sign-up", { email, password, roleType })
       .then((res) => {
         alert("회원 가입 완료");
         return res.data;
