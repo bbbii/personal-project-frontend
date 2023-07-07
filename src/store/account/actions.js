@@ -41,6 +41,7 @@ export default {
         if (res.data.userToken) {
           alert("로그인 완료");
           localStorage.setItem("signInUserInfo", res.data.userToken);
+          commit(SET_EMAIL, email);
           return true;
         } else {
           alert("이메일 또는 비밀번호를 확인해주세요");
