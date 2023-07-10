@@ -1,4 +1,4 @@
-import {} from "./mutation-types";
+import { IS_SIGNIN } from "./mutation-types";
 
 import axiosInstances from "@/utility/axiosInst";
 
@@ -33,16 +33,18 @@ export default {
         alert("회원가입 문제 발생");
       });
   },
-  requestSpringToSignIn({}, payload) {
+  requestSpringToSignIn({ commit }, payload) {
     const { email, password } = payload;
     return axiosInstances.springAxiosInst
       .post("/account/sign-in", { email, password })
       .then((res) => {
         if (res.data.userToken) {
           alert("로그인 완료");
-          localStorage.setItem("signInUserInfo", res.data.userToken);
-          commit(SET_EMAIL, email);
-          return true;
+          localStorage.setItem("userToken", res.data.userToken);
+          commit(IS_SIGNIN, res.data.email);
+          // commit하지 않으면 로그인 이후에 navbar가 갱신되지 않음
+          console.log("IS_SIGNIN");
+          return res.data.email;
         } else {
           alert("이메일 또는 비밀번호를 확인해주세요");
           return false;

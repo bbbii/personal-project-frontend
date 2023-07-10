@@ -1,58 +1,47 @@
 <template lang="">
   <nav>
-    <v-app-bar color="blue darken-1">
+    <v-app-bar color="dark" app dark>
       <v-app-bar-nav-icon @click="navigation_drawer = !navigation_drawer" />
-      <button @click="goToHome">
-        <v-toolbar-title>
-          <span style="color: white">
-            <b> Personal Project </b>
-          </span>
+      <v-btn @click="goToHome">
+        <v-img class="mx-2" src="@/assets/logo.png" max-height="40" max-width="40" contain> </v-img>
+        <v-toolbar-title class="text-uppercase text--darken-4">
+          <span>PROJECT</span>
         </v-toolbar-title>
-      </button>
-
+      </v-btn>
       <v-spacer></v-spacer>
+      <v-btn v-if="!isSignIn" text @click="signUp">
+        <span>회원가입</span>
+        <v-icon right>mdi-account-plus-outline</v-icon>
+      </v-btn>
+      <v-btn v-if="!isSignIn" text @click="signIn">
+        <span>로그인</span>
+        <v-icon right>mdi-login</v-icon>
+      </v-btn>
 
-      <v-btn v-if="!isSignIn" @click="signUp">
-        <v-icon>mdi-account-circle</v-icon>
-        회원가입
-      </v-btn>
-      <v-btn v-if="!isSignIn" @click="signIn">
-        <v-icon>mdi-login</v-icon>
-        로그인
-      </v-btn>
-      <v-btn v-if="isSignIn" @click="signOut">
-        <v-icon>mdi-logout</v-icon>
-        로그아웃
+      <v-btn v-if="isSignIn" text @click="signOut">
+        <span>로그아웃</span>
+        <v-icon right>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-app-bar>
-
     <v-navigation-drawer app v-model="navigation_drawer">
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6">사이드 바</v-list-item-title>
+          <v-list-item-title class="text-h6">사이드바</v-list-item-title>
+          <v-list-item-subtitle>페이지 기능</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
-
       <v-divider></v-divider>
 
-      <v-list>
-        <v-list-item>
+      <v-list nav dense>
+        <v-list-item v-for="(link, index) in links" :key="link.index" router :to="link.route">
           <v-list-item-action>
-            <v-icon>mdi-vuetify</v-icon>
+            <v-icon>
+              {{ link.icon }}
+            </v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
-              <router-link :to="{ name: 'home' }"> 메뉴1 </router-link>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-action>
-            <v-icon>mdi-vuetify</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              <router-link :to="{ name: 'home' }"> 메뉴2 </router-link>
+              {{ link.text }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -62,45 +51,48 @@
 </template>
 
 <script>
+import { IS_SIGNIN } from "@/store/account/mutation-types";
+import { mapState, mapMutations } from "vuex";
+const accountModule = "accountModule";
+
 export default {
   data() {
     return {
       navigation_drawer: false,
-      isSignIn: false,
-      accountId: 0,
+      links: [{ icon: "mdi-home", text: "Home", route: "/" }],
+      userToken: 0,
+      receivedEmail: "test",
     };
   },
+  computed: {
+    ...mapState(accountModule, ["isSignIn"]),
+  },
   methods: {
+    ...mapMutations(accountModule, ["IS_SIGNIN"]),
     signUp() {
       this.$router.push("/sign-up").catch(() => {});
     },
     signIn() {
       this.$router.push("/sign-in").catch(() => {});
     },
-    async signOut() {
-      this.isSignIn = false;
-      localStorage.clear();
-      await this.$router.push("/").catch(() => {});
+    signOut() {
+      localStorage.removeItem("userToken");
+      this[IS_SIGNIN](false);
+      this.$store.state.accountModule.isSignIn = false;
     },
     goToHome() {
       this.$router.push("/").catch(() => {});
     },
   },
   mounted() {
-    this.accountId = localStorage.getItem("signInUserInfo");
-    if (this.accountId) {
-      console.log("도착");
-      this.isSignIn = true;
+    this.userToken = localStorage.getItem("userToken");
+    if (this.userToken == null) {
+      this[IS_SIGNIN](false);
+    } else {
+      this[IS_SIGNIN](true);
     }
   },
 };
 </script>
 
-<style scoped>
-.v-btn {
-  margin: 4px;
-}
-.v-icon {
-  margin: 4px;
-}
-</style>
+<style lang=""></style>
