@@ -17,7 +17,9 @@
         <span>로그인</span>
         <v-icon right>mdi-login</v-icon>
       </v-btn>
-
+      <v-btn v-if="isSignIn" text :to="{ name: 'ProductRegisterPage' }">
+        <span>상품 등록</span>
+      </v-btn>
       <v-btn v-if="isSignIn" text @click="signOut">
         <span>로그아웃</span>
         <v-icon right>mdi-exit-to-app</v-icon>
@@ -61,7 +63,6 @@ export default {
       navigation_drawer: false,
       links: [{ icon: "mdi-home", text: "Home", route: "/" }],
       userToken: 0,
-      receivedEmail: "test",
     };
   },
   computed: {
@@ -78,7 +79,8 @@ export default {
     signOut() {
       localStorage.removeItem("userToken");
       this[IS_SIGNIN](false);
-      this.$store.state.accountModule.isSignIn = false;
+      console.log(this[IS_SIGNIN]);
+      this.$router.push("/").catch(() => {});
     },
     goToHome() {
       this.$router.push("/").catch(() => {});
