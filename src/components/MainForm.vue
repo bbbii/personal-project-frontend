@@ -2,11 +2,11 @@
   <v-row>
     <v-col cols="12">
       <swiper class="swiper" :options="swiperOption">
-        <swiper-slide>배너 1</swiper-slide>
-        <swiper-slide>배너 2</swiper-slide>
-        <swiper-slide>배너 3</swiper-slide>
-        <swiper-slide>배너 4</swiper-slide>
-        <swiper-slide>배너 5</swiper-slide>
+        <swiper-slide><img src="@/assets/apple.png" /></swiper-slide>
+        <swiper-slide><img src="@/assets/grape.png" /></swiper-slide>
+        <swiper-slide><img src="@/assets/gyul.png" /></swiper-slide>
+        <swiper-slide><img src="@/assets/watermelon.png" /></swiper-slide>
+        <swiper-slide><img src="@/assets/mango.png" /></swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
         <!-- pagination  -->
 
@@ -23,7 +23,7 @@ import { Swiper, SwiperSlide } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
 
 export default {
-  name: "HelloWorld",
+  name: "MainForm",
   components: {
     Swiper,
     SwiperSlide,
