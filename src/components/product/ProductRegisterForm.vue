@@ -155,24 +155,6 @@ export default {
           cancelButtonText: "취소",
         })
         .then(async (result) => {
-          // let formData = new FormData();
-          // let productInfo = {
-          //   product_name: this.product_name,
-          //   product_price: this.product_price,
-          //   product_description: this.product_description,
-          //   product_tags: this.product_tags,
-          // };
-          // for (let idx = 0; idx < this.images.length; idx++) {
-          //   formData.append("imageFileList", this.images[idx]);
-          // }
-          // formData.append(
-          //   "productInfo",
-          //   new Blob([JSON.stringify(productInfo)], { type: "application/json" })
-          // );
-          // this.requestRegisterProductInfoToSpring(formData);
-
-          // confirm버튼을 누르면 무조건 실행됨.
-          // 데이터 전송에 실패하면 실행되지 않도록 수정 필요
           if (result.isConfirmed) {
             this.$swal.fire("상품이 등록되었습니다!", "", "success");
 
@@ -183,8 +165,14 @@ export default {
               productTags: this.productTags,
             };
 
-            await this.requestRegisterProductInfoToSpring(product);
-            this.$router.push("/").catch(() => {});
+            const getProductId = await this.requestRegisterProductInfoToSpring(product);
+            // console.log(getProductId);
+            this.$router
+              .push({
+                name: "ProductReadPage",
+                params: { productId: getProductId.toString() },
+              })
+              .catch(() => {});
           }
         });
     },
