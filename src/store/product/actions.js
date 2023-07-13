@@ -9,10 +9,16 @@ export default {
     });
   },
   requestRegisterProductInfoToSpring({}, payload) {
-    const { productName, productPrice, productDescription, productTags } = payload;
+    const { productName, productPrice, productDescription, productTags, email } = payload;
 
     return axiosInstances.springAxiosInst
-      .post("/product/register", { productName, productPrice, productDescription, productTags })
+      .post("/product/register", {
+        productName,
+        productPrice,
+        productDescription,
+        productTags,
+        email,
+      })
       .then((res) => {
         // alert("파일 저장 요청 성공");
         // console.log(res.data.productId);
@@ -26,5 +32,15 @@ export default {
     return axiosInstances.springAxiosInst.get(`/product/${productId}`).then((res) => {
       commit(REQUEST_PRODUCT_TO_SPRING, res.data);
     });
+  },
+  requestDeleteProductToSpring({}, productId) {
+    return axiosInstances.springAxiosInst
+      .delete(`/product/${productId}`)
+      .then((res) => {
+        // alert("파일 삭제 성공");
+      })
+      .catch(() => {
+        alert("문제 발생!");
+      });
   },
 };

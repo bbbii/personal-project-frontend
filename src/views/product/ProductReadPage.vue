@@ -31,8 +31,14 @@ export default {
     ...mapState(productModule, ["product"]),
   },
   methods: {
-    ...mapActions(productModule, ["requestProductToSpring"]),
-    onDelete() {},
+    ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
+    async onDelete() {
+      this.$swal("상품이 삭제되었습니다");
+      // 상품을 등록한 사람만 삭제 가능하도록 작성해보기
+      // accountId? 를 리턴받으면 될것같음 아?마
+      await this.requestDeleteProductToSpring(this.productId);
+      await this.$router.push({ name: "ProductListPage" });
+    },
   },
   created() {
     this.requestProductToSpring(this.productId);

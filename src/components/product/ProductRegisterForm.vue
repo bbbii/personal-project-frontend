@@ -91,8 +91,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
+const accountModule = "accountModule";
 const productModule = "productModule";
 
 export default {
@@ -103,6 +104,7 @@ export default {
       productPrice: 0,
       productDescription: "",
       productTags: "",
+      email: "",
     };
   },
   mounted() {
@@ -113,6 +115,7 @@ export default {
     }
   },
   methods: {
+    ...mapState(accountModule, ["isSignIn"]),
     ...mapActions(productModule, ["requestRegisterProductInfoToSpring"]),
     handleFileUpload() {
       this.images = this.$refs.images.files;
@@ -163,7 +166,9 @@ export default {
               productPrice: this.productPrice,
               productDescription: this.productDescription,
               productTags: this.productTags,
+              email: this.$store.state,
             };
+            console.log(product);
 
             const getProductId = await this.requestRegisterProductInfoToSpring(product);
             // console.log(getProductId);
