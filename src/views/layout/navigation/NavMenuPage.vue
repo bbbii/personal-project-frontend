@@ -3,7 +3,8 @@
     <v-app-bar color="dark" app dark>
       <v-app-bar-nav-icon @click="navigation_drawer = !navigation_drawer" />
       <v-btn @click="goToHome">
-        <v-img class="mx-2" src="@/assets/logo.png" max-height="40" max-width="40" contain> </v-img>
+        <v-img class="mx-2" src="@/assets/apple.png" max-height="40" max-width="40" contain>
+        </v-img>
         <v-toolbar-title class="text-uppercase text--darken-4">
           <span>PROJECT</span>
         </v-toolbar-title>

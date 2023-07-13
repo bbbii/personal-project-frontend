@@ -8,8 +8,8 @@
           <div class="text-subtitle-1 text-medium-emphasis">
             상품 이미지
             <div id="imagePreview">
-              <img v-if="!product.product_image" src="@/assets/preview.png" />
-              <img v-else class="image-preview" id="img" :src="product.product_image" />
+              <img v-if="!productImage" src="@/assets/preview.png" />
+              <img v-else class="image-preview" id="img" :src="productImage" />
             </div>
             <div align="center">
               <label for="upload-image">
@@ -30,7 +30,7 @@
             <v-text-field
               outlined
               placeholder="상품 이름을 적어주세요"
-              v-model="product.product_name"
+              v-model="productName"
               prepend-inner-icon="mdi-card-text-outline"
               :rules="[(v) => !!v || '상품명을 입력해주세요!']"
             />
@@ -40,7 +40,7 @@
             가격
             <v-text-field
               outlined
-              v-model="product.product_price"
+              v-model="productPrice"
               prepend-inner-icon="mdi-currency-krw"
               :rules="[(v) => !!v || '상품가격을 입력해주세요!']"
             />
@@ -53,7 +53,7 @@
               auto-grow
               outlined
               required
-              v-model="product.product_description"
+              v-model="productDescription"
               prepend-inner-icon="mdi-comment-text-outline"
             />
           </div>
@@ -61,7 +61,7 @@
           <div class="text-subtitle-1 text-medium-emphasis">
             태그
             <v-text-field
-              v-model="product.product_tags"
+              v-model="productTags"
               type="text"
               outlined
               hide-details="auto"
@@ -98,13 +98,11 @@ const productModule = "productModule";
 export default {
   data() {
     return {
-      product: {
-        product_image: "",
-        product_name: "",
-        product_price: 0,
-        product_description: "",
-        product_tags: "",
-      },
+      productImage: "",
+      productName: "",
+      productPrice: 0,
+      productDescription: "",
+      productTags: "",
     };
   },
   mounted() {
@@ -121,7 +119,7 @@ export default {
     },
     async getProductImage(event) {
       const file = event.target.files[0];
-      this.product.product_image = await this.base64(file);
+      this.productImage = await this.base64(file);
     },
     base64(file) {
       return new Promise((resolve) => {
@@ -136,16 +134,16 @@ export default {
       this.$router.push("/").catch(() => {});
     },
     productInsert() {
-      if (this.product.product_image == "") {
+      if (this.productImage == "") {
         return this.$swal("상품 이미지를 등록해주세요!");
       }
-      if (this.product.product_name == "") {
+      if (this.productName == "") {
         return this.$swal("상품명을 입력해주세요!");
       }
-      if (this.product.product_price == "" || this.product.product_price == 0) {
+      if (this.productPrice == "" || this.productPrice == 0) {
         return this.$swal("상품가격을 입력해주세요!");
       }
-      if (this.product.product_description == "") {
+      if (this.productDescription == "") {
         return this.$swal("상품설명을 입력해주세요!");
       }
       this.$swal
@@ -157,23 +155,35 @@ export default {
           cancelButtonText: "취소",
         })
         .then(async (result) => {
-          let formData = new FormData();
-          let productInfo = {
-            product: this.product,
-          };
-          for (let idx = 0; idx < this.images.length; idx++) {
-            formData.append("imageFileList", this.images[idx]);
-          }
-          formData.append(
-            "productInfo",
-            new Blob([JSON.stringify(productInfo)], { type: "application/json" })
-          );
-          this.requestRegisterProductInfoToSpring(formData);
+          // let formData = new FormData();
+          // let productInfo = {
+          //   product_name: this.product_name,
+          //   product_price: this.product_price,
+          //   product_description: this.product_description,
+          //   product_tags: this.product_tags,
+          // };
+          // for (let idx = 0; idx < this.images.length; idx++) {
+          //   formData.append("imageFileList", this.images[idx]);
+          // }
+          // formData.append(
+          //   "productInfo",
+          //   new Blob([JSON.stringify(productInfo)], { type: "application/json" })
+          // );
+          // this.requestRegisterProductInfoToSpring(formData);
 
           // confirm버튼을 누르면 무조건 실행됨.
           // 데이터 전송에 실패하면 실행되지 않도록 수정 필요
           if (result.isConfirmed) {
             this.$swal.fire("상품이 등록되었습니다!", "", "success");
+
+            const product = {
+              productName: this.productName,
+              productPrice: this.productPrice,
+              productDescription: this.productDescription,
+              productTags: this.productTags,
+            };
+
+            await this.requestRegisterProductInfoToSpring(product);
             this.$router.push("/").catch(() => {});
           }
         });
