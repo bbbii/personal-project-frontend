@@ -104,18 +104,24 @@ export default {
       productPrice: 0,
       productDescription: "",
       productTags: "",
-      email: "",
     };
+  },
+  computed: {
+    ...mapState(accountModule, ["email"]),
+    receivedEmail() {
+      console.log(this.email);
+      return this.email;
+    },
   },
   mounted() {
     this.userToken = localStorage.getItem("userToken");
+    this.userEmail = localStorage.getItem("userEmail");
     if (this.userToken == null) {
       alert("로그인을 해야 이용할 수 있습니다.");
       this.$router.push("/").catch(() => {});
     }
   },
   methods: {
-    ...mapState(accountModule, ["isSignIn"]),
     ...mapActions(productModule, ["requestRegisterProductInfoToSpring"]),
     handleFileUpload() {
       this.images = this.$refs.images.files;
@@ -166,7 +172,7 @@ export default {
               productPrice: this.productPrice,
               productDescription: this.productDescription,
               productTags: this.productTags,
-              email: this.$store.state,
+              receivedEmail: this.userEmail,
             };
             console.log(product);
 

@@ -9,7 +9,7 @@ export default {
     });
   },
   requestRegisterProductInfoToSpring({}, payload) {
-    const { productName, productPrice, productDescription, productTags, email } = payload;
+    const { productName, productPrice, productDescription, productTags, receivedEmail } = payload;
 
     return axiosInstances.springAxiosInst
       .post("/product/register", {
@@ -17,7 +17,7 @@ export default {
         productPrice,
         productDescription,
         productTags,
-        email,
+        receivedEmail,
       })
       .then((res) => {
         // alert("파일 저장 요청 성공");
