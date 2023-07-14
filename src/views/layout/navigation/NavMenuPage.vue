@@ -18,6 +18,7 @@
         <span>로그인</span>
         <v-icon right>mdi-login</v-icon>
       </v-btn>
+      <span v-if="isSignIn">{{ this.userEmail }}님 안녕하세요</span>
       <v-btn v-if="isSignIn" text :to="{ name: 'ProductRegisterPage' }">
         <span>상품 등록</span>
       </v-btn>
@@ -36,7 +37,7 @@
       <v-divider></v-divider>
 
       <v-list nav dense>
-        <v-list-item v-for="(link, index) in links" :key="link.index" router :to="link.route">
+        <v-list-item v-for="(link, index) in links" :key="link.index" :to="link.route">
           <v-list-item-action>
             <v-icon>
               {{ link.icon }}
@@ -54,8 +55,7 @@
 </template>
 
 <script>
-import { IS_SIGNIN } from "@/store/account/mutation-types";
-import { mapState, mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 const accountModule = "accountModule";
 
 export default {
@@ -63,7 +63,6 @@ export default {
     return {
       navigation_drawer: false,
       links: [{ icon: "mdi-home", text: "Home", route: "/" }],
-      userToken: 0,
     };
   },
   computed: {
@@ -78,9 +77,8 @@ export default {
       this.$router.push("/sign-in").catch(() => {});
     },
     signOut() {
-      localStorage.removeItem("userToken");
-      this[IS_SIGNIN](false);
-      console.log(this[IS_SIGNIN]);
+      localStorage.clear();
+      this.IS_SIGNIN(false);
       this.$router.push("/").catch(() => {});
     },
     goToHome() {
@@ -88,11 +86,10 @@ export default {
     },
   },
   mounted() {
-    this.userToken = localStorage.getItem("userToken");
-    if (this.userToken == null) {
-      this[IS_SIGNIN](false);
-    } else {
-      this[IS_SIGNIN](true);
+    const userToken = localStorage.getItem("userToken");
+    this.userEmail = localStorage.getItem("userEmail");
+    if (userToken) {
+      this.IS_SIGNIN(true);
     }
   },
 };
