@@ -30,7 +30,7 @@ export default {
       .then((res) => {
         // alert("파일 저장 요청 성공");
         // console.log(res.data.productId);
-        return res.data;
+        return res.data.productId;
       })
       .catch(() => {
         alert("문제 발생");
@@ -46,6 +46,34 @@ export default {
       .delete(`/product/${productId}`)
       .then((res) => {
         // alert("파일 삭제 성공");
+      })
+      .catch(() => {
+        alert("문제 발생!");
+      });
+  },
+  requestProductModifyToSpring({}, payload) {
+    const {
+      productName,
+      productPrice,
+      productDescription,
+      productTags,
+      receivedEmail,
+      productImageName,
+      productId,
+    } = payload;
+
+    return axiosInstances.springAxiosInst
+      .put(`/product/${productId}`, {
+        productName,
+        productPrice,
+        productDescription,
+        productTags,
+        receivedEmail,
+        productImageName,
+      })
+      .then((res) => {
+        alert("상품 정보 수정 성공");
+        return res.data.productId;
       })
       .catch(() => {
         alert("문제 발생!");

@@ -43,11 +43,18 @@ export default {
   },
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
-    onModify() {},
+    onModify() {
+      this.$router
+        .push({
+          name: "ProductModifyPage",
+          params: { productId: this.productId },
+        })
+        .catch(() => {});
+    },
     async onDelete() {
       this.$swal("상품이 삭제되었습니다");
       await this.requestDeleteProductToSpring(this.productId);
-      await this.$router.push({ name: "ProductListPage" });
+      await this.$router.push("/product-list").catch(() => {});
     },
     goToList() {
       this.$router.push("/product-list").catch(() => {});
