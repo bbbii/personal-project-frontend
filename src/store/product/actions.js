@@ -30,7 +30,7 @@ export default {
       .then((res) => {
         // alert("파일 저장 요청 성공");
         // console.log(res.data.productId);
-        return res.data.productId;
+        return res.data;
       })
       .catch(() => {
         alert("문제 발생");

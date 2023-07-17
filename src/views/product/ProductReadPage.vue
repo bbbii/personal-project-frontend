@@ -3,11 +3,17 @@
     <h2>상품 상세 내역 보기</h2>
     <product-read-form v-if="product" :product="product" />
     <p v-else>로딩중...</p>
-    <!-- <router-link :to="{ name: 'ProductModifyPage', params: { productId } }">
-      상품 수정
-    </router-link> -->
-    <button @click="onDelete">삭제</button>
-    <router-link :to="{ name: 'ProductListPage' }"> 돌아가기 </router-link>
+    <div style="display: flex; justify-content: space-between">
+      <div>
+        <template v-if="isRegister">
+          <v-btn class="ms-4" @click="onModify">수정</v-btn>
+          <v-btn class="ms-1" @click="onDelete">삭제</v-btn>
+        </template>
+      </div>
+      <div>
+        <v-btn class="text-right" @click="goToList">목록으로</v-btn>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -18,6 +24,11 @@ import { mapActions, mapState } from "vuex";
 const productModule = "productModule";
 
 export default {
+  data() {
+    return {
+      isRegister: false,
+    };
+  },
   components: {
     ProductReadForm,
   },
@@ -32,18 +43,27 @@ export default {
   },
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
+    onModify() {},
     async onDelete() {
       this.$swal("상품이 삭제되었습니다");
-      // 상품을 등록한 사람만 삭제 가능하도록 작성해보기
-      // accountId? 를 리턴받으면 될것같음 아?마
       await this.requestDeleteProductToSpring(this.productId);
       await this.$router.push({ name: "ProductListPage" });
     },
+    goToList() {
+      this.$router.push("/product-list").catch(() => {});
+    },
   },
-  created() {
-    this.requestProductToSpring(this.productId);
+  async created() {
+    await this.requestProductToSpring(this.productId);
+    // console.log("상품 등록자 이메일" + this.product.registerEmail);
+    // console.log("현재 사용자 이메일" + localStorage.getItem("userEmail"));
+    const registerEmail = this.product.registerEmail;
+    const userEmail = localStorage.getItem("userEmail");
+    if (registerEmail === userEmail) {
+      this.isRegister = true;
+    }
   },
 };
 </script>
 
-<style lang=""></style>
+<style scoped></style>
