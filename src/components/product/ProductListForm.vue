@@ -23,7 +23,7 @@
               params: { productId: product.productId.toString() },
             }"
           >
-            <img class="contain" :src="getImageToS3(product.productImageName)" />
+            <img class="image-preview" :src="getImageToS3(product.productImageName)" />
           </router-link>
         </td>
         <td align="center">
@@ -56,7 +56,7 @@ export default {
 </script>
 
 <style scoped>
-.contain {
+.image-preview {
   object-fit: scale-down;
   max-width: 150px;
   max-height: 150px;

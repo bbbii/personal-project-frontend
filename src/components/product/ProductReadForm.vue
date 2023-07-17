@@ -8,7 +8,7 @@
           <div class="text-subtitle-1 text-medium-emphasis">
             상품 이미지
             <div id="imagePreview">
-              <!-- <img class="image-preview" id="img" :src="productImage" /> -->
+              <img class="product-image" id="img" :src="getImageToS3(product.productImageName)" />
             </div>
           </div>
 
@@ -66,7 +66,22 @@ export default {
       required: true,
     },
   },
+  methods: {
+    getImageToS3(imageName) {
+      return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
+    },
+  },
+  async mounted() {
+    this.getImageToS3();
+  },
 };
 </script>
 
-<style lang=""></style>
+<style scoped>
+.product-image {
+  text-align: center;
+  object-fit: scale-down;
+  max-width: 300px;
+  max-height: 300px;
+}
+</style>
