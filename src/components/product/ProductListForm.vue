@@ -23,7 +23,7 @@
               params: { productId: product.productId.toString() },
             }"
           >
-            이미지 없음
+            <img class="contain" :src="getImageToS3(product.productImageName)" />
           </router-link>
         </td>
         <td align="center">
@@ -44,7 +44,21 @@ export default {
       type: Array,
     },
   },
+  methods: {
+    getImageToS3(imageName) {
+      return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
+    },
+  },
+  async mounted() {
+    this.getImageToS3();
+  },
 };
 </script>
 
-<style lang=""></style>
+<style scoped>
+.contain {
+  object-fit: scale-down;
+  max-width: 150px;
+  max-height: 150px;
+}
+</style>
