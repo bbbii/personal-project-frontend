@@ -42,8 +42,8 @@ export default {
           alert("로그인 완료");
           commit(IS_SIGNIN, res.data.userToken);
           commit(EMAIL, res.data.email);
-          // localStorage.setItem("userToken", res.data.userToken);
-          // localStorage.setItem("userEmail", res.data.email);
+          localStorage.setItem("userToken", res.data.userToken);
+          localStorage.setItem("userEmail", res.data.email);
           // commit하지 않으면 로그인 이후에 navbar가 갱신되지 않음
           console.log(res.data.userToken);
           console.log(res.data.email);

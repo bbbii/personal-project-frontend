@@ -10,21 +10,14 @@
             <div id="imagePreview">
               <img v-if="!productImage" src="@/assets/preview.png" />
               <img v-else class="image-preview" id="img" :src="productImage" />
-              <div v-for="(file, index) in awsFileList" :key="file.Key">
-                #{{ index + 1 }} {{ file.Key }}
-                <v-btn @click="deleteAwsS3File(file.Key)" color="red" text icon>x</v-btn>
-              </div>
-
-              <input id="file-selector" ref="file" type="file" @change="handleFileUpload()" />
             </div>
             <div align="center">
-              <label for="upload-image">
-                <v-btn @click="uploadAwsS3" color="primary" text>AWS S3 업로드</v-btn><br />
+              <label for="file-selector">
                 <div class="btn-upload">이미지 업로드</div>
               </label>
             </div>
             <input
-              id="upload-image"
+              id="file-selector"
               type="file"
               ref="images"
               accept="image/*"
@@ -114,8 +107,6 @@ export default {
       awsIdentityPoolId: "ap-northeast-2:80a79c65-d48c-4b8e-88d8-229292796a41",
       s3: null,
       awsFileList: [],
-      startAfterAwsS3Bucket: null,
-      awsS3NextToken: null,
 
       // Product
       productImage: "",
@@ -123,6 +114,7 @@ export default {
       productPrice: 0,
       productDescription: "",
       productTags: "",
+      productImageName: "",
     };
   },
   computed: {
@@ -143,8 +135,20 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestRegisterProductInfoToSpring"]),
     handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-      console.log("file: " + this.file.name);
+      this.images = this.$refs.images.files[0];
+    },
+    async getProductImage(event) {
+      const file = event.target.files[0];
+      this.productImage = await this.base64(file);
+    },
+    base64(file) {
+      return new Promise((resolve) => {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          resolve(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
     },
     awsS3Config() {
       AWS.config.update({
@@ -153,7 +157,6 @@ export default {
           IdentityPoolId: this.awsIdentityPoolId,
         }),
       });
-
       this.s3 = new AWS.S3({
         apiVersion: "2006-03-01",
         params: {
@@ -163,11 +166,10 @@ export default {
     },
     uploadAwsS3() {
       this.awsS3Config();
-
       this.s3.upload(
         {
-          Key: this.file.name,
-          Body: this.file,
+          Key: this.images.name,
+          Body: this.images,
           ACL: "public-read",
         },
         (err, data) => {
@@ -175,14 +177,13 @@ export default {
             console.log(err);
             return alert("업로드 중 문제 발생 (사진 파일에 문제가 있음)", err.message);
           }
-          alert("업로드 성공");
-          this.getAwsS3Files();
+          // alert("업로드 성공");
+          // this.getAwsS3Files();
         }
       );
     },
     getAwsS3Files() {
       this.awsS3Config();
-
       let res = this.s3.listObjects(
         {
           Delimiter: "/",
@@ -194,43 +195,10 @@ export default {
           } else {
             this.awsFileList = data.Contents;
             console.log("s3 리스트: ", data);
-            this.startAfterAwsS3Bucket = data.NextMarker;
           }
         }
       );
     },
-    deleteAwsS3File(key) {
-      this.awsS3Config();
-
-      this.s3.deleteObject(
-        {
-          Key: key,
-        },
-        (err, data) => {
-          if (err) {
-            return alert("AWS 버킷 데이터 삭제에 문제가 발생했습니다: " + err.message);
-          }
-          alert("AWS 버킷 데이터 삭제가 성공적으로 완료되었습니다");
-          this.getAwsS3Files();
-        }
-      );
-    },
-    // handleFileUpload() {
-    //   this.images = this.$refs.images.files;
-    // },
-    // async getProductImage(event) {
-    //   const file = event.target.files[0];
-    //   this.productImage = await this.base64(file);
-    // },
-    // base64(file) {
-    //   return new Promise((resolve) => {
-    //     let reader = new FileReader();
-    //     reader.onload = (e) => {
-    //       resolve(e.target.result);
-    //     };
-    //     reader.readAsDataURL(file);
-    //   });
-    // },
     goToList() {
       this.$router.push("/").catch(() => {});
     },
@@ -265,11 +233,13 @@ export default {
               productDescription: this.productDescription,
               productTags: this.productTags,
               receivedEmail: this.userEmail,
+              productImageName: this.images.name,
             };
             console.log(product);
-
             const getProductId = await this.requestRegisterProductInfoToSpring(product);
-            // console.log(getProductId);
+
+            this.uploadAwsS3();
+            console.log(this.productImageName);
             this.$router
               .push({
                 name: "ProductReadPage",
@@ -280,14 +250,11 @@ export default {
         });
     },
   },
-  created() {
-    this.getAwsS3Files();
-  },
 };
 </script>
 
 <style scoped>
-#upload-image {
+#file-selector {
   display: none;
 }
 .image-preview {
