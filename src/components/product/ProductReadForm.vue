@@ -59,6 +59,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      productImage: "",
+    };
+  },
   name: "ProductReadForm",
   props: {
     product: {
@@ -72,8 +77,11 @@ export default {
     },
   },
   async mounted() {
-    this.getImageToS3();
+    console.log(this.product.productImageName);
+    this.productImage = localStorage.getItem("productImage");
   },
+
+  updated() {},
 };
 </script>
 

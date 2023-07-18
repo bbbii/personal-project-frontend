@@ -140,6 +140,7 @@ export default {
     async getProductImage(event) {
       const file = event.target.files[0];
       this.productImage = await this.base64(file);
+      localStorage.setItem("productImage", this.productImage);
     },
     base64(file) {
       return new Promise((resolve) => {
@@ -178,7 +179,7 @@ export default {
             return alert("업로드 중 문제 발생 (사진 파일에 문제가 있음)", err.message);
           }
           // alert("업로드 성공");
-          // this.getAwsS3Files();
+          this.getAwsS3Files();
         }
       );
     },
@@ -225,8 +226,6 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            this.$swal.fire("상품이 등록되었습니다!", "", "success");
-
             const product = {
               productName: this.productName,
               productPrice: this.productPrice,
@@ -235,11 +234,11 @@ export default {
               receivedEmail: this.userEmail,
               productImageName: this.images.name,
             };
-            console.log(product);
+
+            await this.uploadAwsS3();
             const getProductId = await this.requestRegisterProductInfoToSpring(product);
 
-            this.uploadAwsS3();
-            console.log(this.productImageName);
+            this.$swal.fire("상품이 등록되었습니다!", "", "success");
             this.$router
               .push({
                 name: "ProductReadPage",

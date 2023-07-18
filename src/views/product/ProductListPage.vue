@@ -14,18 +14,17 @@ import ProductListForm from "@/components/product/ProductListForm.vue";
 const productModule = "productModule";
 
 export default {
-  components: { ProductListForm },
-  data() {
-    return {};
+  components: {
+    ProductListForm,
   },
   computed: {
     ...mapState(productModule, ["products"]),
   },
-  mounted() {
-    this.requestProductListToSpring();
-  },
   methods: {
     ...mapActions(productModule, ["requestProductListToSpring"]),
+  },
+  mounted() {
+    this.requestProductListToSpring();
   },
 };
 </script>

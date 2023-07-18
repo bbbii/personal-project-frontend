@@ -70,6 +70,7 @@ export default {
         productTags,
         receivedEmail,
         productImageName,
+        productId,
       })
       .then((res) => {
         alert("상품 정보 수정 성공");

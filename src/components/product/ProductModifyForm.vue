@@ -1,99 +1,102 @@
 <template lang="">
-  <v-container>
-    <v-row justify="center">
-      <v-col>
-        <v-card class="mx-auto pa-12 pb-8" elevation="8" width="auto" rounded="lg">
-          <h2 class="text-center mb-3">상품 정보 수정</h2>
+  <form @submit.prevent="productInsert">
+    <v-container>
+      <v-row justify="center">
+        <v-col>
+          <v-card class="mx-auto pa-12 pb-8" elevation="8" width="auto" rounded="lg">
+            <h2 class="text-center mb-3">상품 정보 수정</h2>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            상품 이미지
-            <div id="imagePreview">
-              <img class="image-preview" id="img" :src="receivedImage" />
+            <div class="text-subtitle-1 text-medium-emphasis">
+              상품 이미지
+              <div id="imagePreview">
+                <img class="image-preview" :src="productImage" />
+              </div>
+              <div align="center">
+                <label for="file-selector">
+                  <div class="btn-upload">이미지 업로드</div>
+                </label>
+              </div>
+              <input
+                id="file-selector"
+                type="file"
+                ref="images"
+                accept="image/*"
+                @change="getProductImage($event) && handleFileUpload()"
+              />
             </div>
-            <div align="center">
-              <label for="file-selector">
-                <div class="btn-upload">이미지 업로드</div>
-              </label>
+
+            <div class="text-subtitle-1 text-medium-emphasis">
+              상품명
+              <v-text-field
+                outlined
+                placeholder="상품 이름을 적어주세요"
+                v-model="productInfo.productName"
+                prepend-inner-icon="mdi-card-text-outline"
+                :rules="[(v) => !!v || '상품명을 입력해주세요!']"
+              />
             </div>
-            <input
-              id="file-selector"
-              type="file"
-              ref="images"
-              accept="image/*"
-              @change="getProductImage($event) && handleFileUpload()"
-            />
-          </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            상품명
-            <v-text-field
-              outlined
-              placeholder="상품 이름을 적어주세요"
-              v-model="productName"
-              prepend-inner-icon="mdi-card-text-outline"
-              :rules="[(v) => !!v || '상품명을 입력해주세요!']"
-            />
-          </div>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              가격
+              <v-text-field
+                outlined
+                v-model="productInfo.productPrice"
+                prepend-inner-icon="mdi-currency-krw"
+                :rules="[(v) => !!v || '상품가격을 입력해주세요!']"
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            가격
-            <v-text-field
-              outlined
-              v-model="productPrice"
-              prepend-inner-icon="mdi-currency-krw"
-              :rules="[(v) => !!v || '상품가격을 입력해주세요!']"
-            />
-          </div>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              상품 설명
+              <v-textarea
+                type="text"
+                auto-grow
+                outlined
+                required
+                v-model="productInfo.productDescription"
+                prepend-inner-icon="mdi-comment-text-outline"
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            상품 설명
-            <v-textarea
-              type="text"
-              auto-grow
-              outlined
-              required
-              v-model="productDescription"
-              prepend-inner-icon="mdi-comment-text-outline"
-            />
-          </div>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              태그
+              <v-text-field
+                v-model="productInfo.productTags"
+                type="text"
+                outlined
+                hide-details="auto"
+                prepend-inner-icon="mdi-label-outline"
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            태그
-            <v-text-field
-              v-model="productTags"
-              type="text"
-              outlined
-              hide-details="auto"
-              prepend-inner-icon="mdi-label-outline"
-            />
-          </div>
-
-          <div
-            class="text-subtitle-1 text-medium-emphasis d-flex justify-content-between align-items-center"
-          >
-            <v-btn
-              class="flex-grow-1"
-              height="48"
-              prepend-icon="$vuetify"
-              stacked
-              @click="productInsert"
+            <div
+              class="text-subtitle-1 text-medium-emphasis d-flex justify-content-between align-items-center"
             >
-              수정 완료
-            </v-btn>
+              <v-btn
+                class="flex-grow-1"
+                height="48"
+                prepend-icon="$vuetify"
+                stacked
+                @click="productInsert"
+                type="submit"
+              >
+                수정 완료
+              </v-btn>
 
-            <v-btn class="flex-grow-1" height="48" variant="tonal" @click="goToList"> 취소 </v-btn>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+              <v-btn class="flex-grow-1" height="48" variant="tonal" @click="goToList">
+                취소
+              </v-btn>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </form>
 </template>
 
 <script>
 import AWS from "aws-sdk";
-import { mapActions, mapState } from "vuex";
-
-const accountModule = "accountModule";
+import { mapState } from "vuex";
 const productModule = "productModule";
 
 export default {
@@ -108,48 +111,26 @@ export default {
       awsFileList: [],
 
       // Product
-      productImage: "",
       productName: "",
       productPrice: 0,
       productDescription: "",
       productTags: "",
-      productImageName: "",
       receivedEmail: "",
-      receivedImage: "",
+      productImage: "",
+
+      images: null,
     };
   },
   props: {
-    product: {
+    productInfo: {
       type: Object,
       required: true,
     },
-    productId: {
-      type: String,
-      required: true,
-    },
-  },
-  created() {
-    this.productName = this.product.productName;
-    this.productPrice = this.product.productPrice;
-    this.productDescription = this.product.productDescription;
-    this.productTags = this.product.productTags;
-    this.receivedEmail = this.product.userEmail;
   },
   computed: {
-    ...mapState(accountModule, ["email"]),
-  },
-  mounted() {
-    this.userToken = localStorage.getItem("userToken");
-    this.userEmail = localStorage.getItem("userEmail");
-    if (this.userToken == null) {
-      alert("로그인을 해야 이용할 수 있습니다.");
-      this.$router.push("/").catch(() => {});
-    }
-    const imageName = this.product.productImageName;
-    this.receivedImage = this.getImageToS3(imageName);
+    ...mapState(productModule, ["product"]),
   },
   methods: {
-    ...mapActions(productModule, ["requestProductModifyToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
@@ -158,11 +139,8 @@ export default {
     },
     async getProductImage(event) {
       const file = event.target.files[0];
-      if (file) {
-        this.productImage = await this.base64(file);
-      } else {
-        this.productImage = this.receivedImage;
-      }
+      this.productImage = await this.base64(file);
+      localStorage.setItem("productImage", this.productImage);
     },
     base64(file) {
       return new Promise((resolve) => {
@@ -200,8 +178,8 @@ export default {
             console.log(err);
             return alert("업로드 중 문제 발생 (사진 파일에 문제가 있음)", err.message);
           }
-          // alert("업로드 성공");
-          // this.getAwsS3Files();
+          alert("업로드 성공");
+          this.getAwsS3Files();
         }
       );
     },
@@ -223,12 +201,12 @@ export default {
       );
     },
     goToList() {
-      this.$router.push("/").catch(() => {});
+      this.$router.push("/product-list").catch(() => {});
     },
     productInsert() {
-      //   if (this.productImage == "") {
-      //     return this.$swal("상품 이미지를 등록해주세요!");
-      //   }
+      if (this.productImage == "") {
+        return this.$swal("상품 이미지를 등록해주세요!");
+      }
       if (this.productName == "") {
         return this.$swal("상품명을 입력해주세요!");
       }
@@ -249,30 +227,42 @@ export default {
         .then(async (result) => {
           if (result.isConfirmed) {
             this.$swal.fire("저장되었습니다!", "", "success");
-
-            const product = {
-              productName: this.productName,
-              productPrice: this.productPrice,
-              productDescription: this.productDescription,
-              productTags: this.productTags,
-              receivedEmail: this.userEmail,
-              productImageName: this.imageName,
-              productId: this.productId,
-            };
-            console.log(product);
-            const getProductId = await this.requestProductModifyToSpring(product);
-
+            const {
+              productName,
+              productPrice,
+              productDescription,
+              productTags,
+              receivedEmail,
+              productImage,
+            } = this;
+            this.$emit("submit", {
+              productName,
+              productPrice,
+              productDescription,
+              productTags,
+              receivedEmail,
+              productImage,
+            });
             this.uploadAwsS3();
-            console.log(this.productImageName);
-            this.$router
-              .push({
-                name: "ProductReadPage",
-                params: { productId: getProductId.toString() },
-              })
-              .catch(() => {});
           }
         });
     },
+  },
+  mounted() {
+    this.userToken = localStorage.getItem("userToken");
+    this.userEmail = localStorage.getItem("userEmail");
+    if (this.userToken == null) {
+      alert("로그인을 해야 이용할 수 있습니다.");
+      this.$router.push("/").catch(() => {});
+    }
+    this.productImage = localStorage.getItem("productImage");
+  },
+  created() {
+    this.productName = this.productInfo.productName;
+    this.productPrice = this.productInfo.productPrice;
+    this.productDescription = this.productInfo.productDescription;
+    this.productTags = this.productInfo.productTags;
+    this.receivedEmail = this.productInfo.userEmail;
   },
 };
 </script>

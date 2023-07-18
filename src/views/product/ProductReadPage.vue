@@ -20,7 +20,6 @@
 <script>
 import ProductReadForm from "@/components/product/ProductReadForm.vue";
 import { mapActions, mapState } from "vuex";
-
 const productModule = "productModule";
 
 export default {
@@ -38,6 +37,8 @@ export default {
       required: true,
     },
   },
+  // 등록에서는 잘 받는데
+  // 수정에서 잘 못받음
   computed: {
     ...mapState(productModule, ["product"]),
   },
