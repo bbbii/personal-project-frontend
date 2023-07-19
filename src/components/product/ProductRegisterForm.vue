@@ -9,7 +9,7 @@
             상품 이미지
             <div id="imagePreview">
               <img v-if="!productImage" src="@/assets/preview.png" />
-              <img v-else class="image-preview" id="img" :src="productImage" />
+              <img v-else class="image-preview" id="img" :src="getImageToS3(productImage)" />
             </div>
             <div align="center">
               <label for="file-selector">
@@ -21,7 +21,7 @@
               type="file"
               ref="images"
               accept="image/*"
-              @change="getProductImage($event) && handleFileUpload()"
+              @change="getProductImage($event)"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default {
   data() {
     return {
       // AWS S3
-      file: null,
+      images: null,
       awsBucketName: "vue-s3-3737",
       awsBucketRegion: "ap-northeast-2",
       awsIdentityPoolId: "ap-northeast-2:80a79c65-d48c-4b8e-88d8-229292796a41",
@@ -134,22 +134,18 @@ export default {
   },
   methods: {
     ...mapActions(productModule, ["requestRegisterProductInfoToSpring"]),
-    handleFileUpload() {
-      this.images = this.$refs.images.files[0];
+    getImageToS3(imageName) {
+      return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
-    async getProductImage(event) {
-      const file = event.target.files[0];
-      this.productImage = await this.base64(file);
-      localStorage.setItem("productImage", this.productImage);
+    handleFileUpload(event) {
+      this.images = event.target.files[0];
     },
-    base64(file) {
-      return new Promise((resolve) => {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
+    getProductImage(event) {
+      this.handleFileUpload(event);
+      const file = this.images;
+      localStorage.setItem("productImage", file.name);
+      this.uploadAwsS3(file);
+      this.productImage = localStorage.getItem("productImage");
     },
     awsS3Config() {
       AWS.config.update({
@@ -167,6 +163,7 @@ export default {
     },
     uploadAwsS3() {
       this.awsS3Config();
+      console.log(this.images);
       this.s3.upload(
         {
           Key: this.images.name,

@@ -21,7 +21,7 @@
                 type="file"
                 ref="images"
                 accept="image/*"
-                @change="getProductImage($event) && handleFileUpload()"
+                @change="getProductImage($event)"
               />
             </div>
 
@@ -103,7 +103,7 @@ export default {
   data() {
     return {
       // AWS S3
-      file: null,
+      images: null,
       awsBucketName: "vue-s3-3737",
       awsBucketRegion: "ap-northeast-2",
       awsIdentityPoolId: "ap-northeast-2:80a79c65-d48c-4b8e-88d8-229292796a41",
@@ -117,14 +117,19 @@ export default {
       productTags: "",
       receivedEmail: "",
       productImage: "",
-
-      images: null,
     };
   },
   props: {
     productInfo: {
       type: Object,
       required: true,
+    },
+  },
+  watch: {
+    product() {
+      localStorage.setItem("productImage", this.product.productImageName);
+      this.receivedImage = localStorage.getItem("productImage");
+      this.productImage = this.getImageToS3(this.receivedImage);
     },
   },
   computed: {
@@ -134,22 +139,16 @@ export default {
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
-    async handleFileUpload() {
-      this.images = this.$refs.images.files[0];
+    handleFileUpload(event) {
+      this.images = event.target.files[0];
     },
-    async getProductImage(event) {
-      const file = event.target.files[0];
-      this.productImage = await this.base64(file);
-      localStorage.setItem("productImage", this.productImage);
-    },
-    base64(file) {
-      return new Promise((resolve) => {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
+    getProductImage(event) {
+      this.handleFileUpload(event);
+      const file = this.images;
+      localStorage.setItem("productImage", file.name);
+      this.uploadAwsS3(file);
+      this.receivedImage = localStorage.getItem("productImage");
+      this.productImage = this.getImageToS3(this.receivedImage);
     },
     awsS3Config() {
       AWS.config.update({
@@ -178,7 +177,7 @@ export default {
             console.log(err);
             return alert("업로드 중 문제 발생 (사진 파일에 문제가 있음)", err.message);
           }
-          alert("업로드 성공");
+          // alert("업로드 성공");
           this.getAwsS3Files();
         }
       );
@@ -255,7 +254,6 @@ export default {
       alert("로그인을 해야 이용할 수 있습니다.");
       this.$router.push("/").catch(() => {});
     }
-    this.productImage = localStorage.getItem("productImage");
   },
   created() {
     this.productName = this.productInfo.productName;

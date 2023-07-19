@@ -23,9 +23,12 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestProductListToSpring"]),
   },
-  mounted() {
+  created() {
     this.requestProductListToSpring();
   },
+  // mounted() {
+  //   this.requestProductListToSpring();
+  // },
 };
 </script>
 

@@ -27,7 +27,14 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestProductModifyToSpring"]),
     async onSubmit(payload) {
-      const { productName, productPrice, productDescription, productTags, receivedEmail } = payload;
+      const {
+        productName,
+        productPrice,
+        productDescription,
+        productTags,
+        receivedEmail,
+        productImage,
+      } = payload;
       const productId = this.productId;
       console.log("page 도착" + payload.productName);
       await this.requestProductModifyToSpring({
@@ -36,6 +43,7 @@ export default {
         productDescription,
         productTags,
         receivedEmail,
+        productImage,
         productId,
       });
       await this.$router.push({

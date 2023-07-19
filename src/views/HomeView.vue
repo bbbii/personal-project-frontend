@@ -8,6 +8,8 @@
         <h1>메인 페이지</h1>
         <nav>
           <router-link to="/product-list">상품 목록</router-link><br/>
+          <router-link to="/order-list">주문 목록</router-link><br/>
+          <router-link to="/order-confirmation">이게뭐지</router-link><br/>
         </nav>
       </v-col>
     </v-row>
@@ -22,6 +24,10 @@ export default {
 
   components: {
     MainForm,
+  },
+
+  created() {
+    localStorage.removeItem("productImage");
   },
 };
 </script>

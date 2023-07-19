@@ -51,14 +51,14 @@ export default {
         alert("문제 발생!");
       });
   },
-  requestProductModifyToSpring({}, payload) {
+  requestProductModifyToSpring({ commit }, payload) {
     const {
       productName,
       productPrice,
       productDescription,
       productTags,
       receivedEmail,
-      productImageName,
+      productImage,
       productId,
     } = payload;
 
@@ -69,12 +69,13 @@ export default {
         productDescription,
         productTags,
         receivedEmail,
-        productImageName,
-        productId,
+        productImage,
       })
       .then((res) => {
-        alert("상품 정보 수정 성공");
-        return res.data.productId;
+        // alert("상품 정보 수정 성공");
+        commit(REQUEST_PRODUCT_TO_SPRING, res.data);
+        console.log(res.data);
+        return res.data;
       })
       .catch(() => {
         alert("문제 발생!");

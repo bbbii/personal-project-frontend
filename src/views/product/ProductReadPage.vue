@@ -3,17 +3,6 @@
     <h2>상품 상세 내역 보기</h2>
     <product-read-form v-if="product" :product="product" />
     <p v-else>로딩중...</p>
-    <div style="display: flex; justify-content: space-between">
-      <div>
-        <template v-if="isRegister">
-          <v-btn class="ms-4" @click="onModify">수정</v-btn>
-          <v-btn class="ms-1" @click="onDelete">삭제</v-btn>
-        </template>
-      </div>
-      <div>
-        <v-btn class="text-right" @click="goToList">목록으로</v-btn>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -37,8 +26,6 @@ export default {
       required: true,
     },
   },
-  // 등록에서는 잘 받는데
-  // 수정에서 잘 못받음
   computed: {
     ...mapState(productModule, ["product"]),
   },
@@ -54,6 +41,7 @@ export default {
     },
     async onDelete() {
       this.$swal("상품이 삭제되었습니다");
+      localStorage.removeItem("productImage");
       await this.requestDeleteProductToSpring(this.productId);
       await this.$router.push("/product-list").catch(() => {});
     },
