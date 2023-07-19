@@ -8,7 +8,7 @@
           <div class="text-subtitle-1 text-medium-emphasis">
             상품 이미지
             <div id="imagePreview">
-              <img class="product-image" id="img" :src="productImage" />
+              <img :src="product.productImageName ? getImageToS3(product.productImageName) : ''" />
             </div>
           </div>
 
@@ -70,7 +70,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
+
 const productModule = "productModule";
 
 export default {
@@ -78,7 +79,9 @@ export default {
     return {
       productImage: "",
       receivedImage: "",
-      isRegister: false,
+      isRegister: true,
+      userEmail: "",
+      registerEmail: "",
     };
   },
   name: "ProductReadForm",
@@ -88,48 +91,32 @@ export default {
       required: true,
     },
   },
-  computed: {
-    ...mapState(productModule, ["product"]),
-  },
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
+    // Spring에서 처리하도록 수정 필요
     onModify() {
       this.$router
         .push({
           name: "ProductModifyPage",
-          params: { productId: this.productId },
+          params: { productId: this.product.productId },
         })
         .catch(() => {});
     },
     async onDelete() {
       this.$swal("상품이 삭제되었습니다");
       localStorage.removeItem("productImage");
-      await this.requestDeleteProductToSpring(this.productId);
+      await this.requestDeleteProductToSpring(this.product.productId);
       await this.$router.push("/product-list").catch(() => {});
     },
     goToList() {
       this.$router.push("/product-list").catch(() => {});
     },
   },
-  async created() {
-    await this.requestProductToSpring(this.productId);
-    // console.log("상품 등록자 이메일" + this.product.registerEmail);
-    // console.log("현재 사용자 이메일" + localStorage.getItem("userEmail"));
-    const registerEmail = this.product.registerEmail;
-    const userEmail = localStorage.getItem("userEmail");
-    if (registerEmail === userEmail) {
-      this.isRegister = true;
-    }
-  },
-  watch: {
-    product() {
-      localStorage.setItem("productImage", this.product.productImageName);
-      this.receivedImage = localStorage.getItem("productImage");
-      this.productImage = this.getImageToS3(this.receivedImage);
-    },
+  async mounted() {
+    this.getImageToS3();
   },
 };
 </script>

@@ -9,14 +9,10 @@
 <script>
 import ProductReadForm from "@/components/product/ProductReadForm.vue";
 import { mapActions, mapState } from "vuex";
+
 const productModule = "productModule";
 
 export default {
-  data() {
-    return {
-      isRegister: false,
-    };
-  },
   components: {
     ProductReadForm,
   },
@@ -30,34 +26,10 @@ export default {
     ...mapState(productModule, ["product"]),
   },
   methods: {
-    ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
-    onModify() {
-      this.$router
-        .push({
-          name: "ProductModifyPage",
-          params: { productId: this.productId },
-        })
-        .catch(() => {});
-    },
-    async onDelete() {
-      this.$swal("상품이 삭제되었습니다");
-      localStorage.removeItem("productImage");
-      await this.requestDeleteProductToSpring(this.productId);
-      await this.$router.push("/product-list").catch(() => {});
-    },
-    goToList() {
-      this.$router.push("/product-list").catch(() => {});
-    },
+    ...mapActions(productModule, ["requestProductToSpring"]),
   },
-  async created() {
-    await this.requestProductToSpring(this.productId);
-    // console.log("상품 등록자 이메일" + this.product.registerEmail);
-    // console.log("현재 사용자 이메일" + localStorage.getItem("userEmail"));
-    const registerEmail = this.product.registerEmail;
-    const userEmail = localStorage.getItem("userEmail");
-    if (registerEmail === userEmail) {
-      this.isRegister = true;
-    }
+  created() {
+    this.requestProductToSpring(this.productId);
   },
 };
 </script>

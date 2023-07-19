@@ -11,6 +11,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import ProductListForm from "@/components/product/ProductListForm.vue";
+
 const productModule = "productModule";
 
 export default {
@@ -23,12 +24,9 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestProductListToSpring"]),
   },
-  created() {
+  mounted() {
     this.requestProductListToSpring();
   },
-  // mounted() {
-  //   this.requestProductListToSpring();
-  // },
 };
 </script>
 
