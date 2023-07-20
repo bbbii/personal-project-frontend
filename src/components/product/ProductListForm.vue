@@ -23,7 +23,7 @@
               params: { productId: product.productId.toString() },
             }"
           >
-            <img class="image-preview" :src="getImageToS3(product.productImageName)" />
+            <img class="image-preview" :src="getImageToS3(product.mainImageName)" />
           </router-link>
         </td>
         <td align="center">
@@ -39,9 +39,15 @@
 
 <script>
 export default {
+  data() {
+    return {
+      mainImageNameList: [],
+    };
+  },
   props: {
     products: {
       type: Array,
+      required: true,
     },
   },
   methods: {

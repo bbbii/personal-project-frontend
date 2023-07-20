@@ -14,18 +14,17 @@ export default {
       productPrice,
       productDescription,
       productTags,
-      receivedEmail,
-      productImageName,
+      mainImageName,
+      imageNameList,
     } = payload;
-
     return axiosInstances.springAxiosInst
       .post("/product/register", {
         productName,
         productPrice,
         productDescription,
         productTags,
-        receivedEmail,
-        productImageName,
+        mainImageName,
+        imageNameList,
       })
       .then((res) => {
         // alert("파일 저장 요청 성공");
@@ -51,31 +50,28 @@ export default {
         alert("문제 발생!");
       });
   },
-  requestProductModifyToSpring({ commit }, payload) {
+  requestProductModifyToSpring({}, payload) {
     const {
       productName,
       productPrice,
       productDescription,
       productTags,
-      receivedEmail,
-      productImage,
+      mainImageName,
+      imageNameList,
       productId,
     } = payload;
-
     return axiosInstances.springAxiosInst
       .put(`/product/${productId}`, {
         productName,
         productPrice,
         productDescription,
         productTags,
-        receivedEmail,
-        productImage,
+        mainImageName,
+        imageNameList,
       })
       .then((res) => {
         // alert("상품 정보 수정 성공");
-        commit(REQUEST_PRODUCT_TO_SPRING, res.data);
-        console.log(res.data);
-        return res.data;
+        return res.data.productId;
       })
       .catch(() => {
         alert("문제 발생!");

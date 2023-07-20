@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <h2>상품 수정</h2>
-    <product-modify-form v-if="product" :productInfo="product" @submit="onSubmit" />
+    <product-modify-form v-if="product" :product="product" @submit="onSubmit" />
     <p v-else>상품 정보를 불러오는 중...</p>
   </div>
 </template>
@@ -27,28 +27,11 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestProductModifyToSpring"]),
     async onSubmit(payload) {
-      const {
-        productName,
-        productPrice,
-        productDescription,
-        productTags,
-        receivedEmail,
-        productImage,
-      } = payload;
-      const productId = this.productId;
-      console.log("page 도착" + payload.productName);
-      await this.requestProductModifyToSpring({
-        productName,
-        productPrice,
-        productDescription,
-        productTags,
-        receivedEmail,
-        productImage,
-        productId,
-      });
+      const modifiedProduct = await this.requestProductModifyToSpring(payload);
+
       await this.$router.push({
         name: "ProductReadPage",
-        params: { productId: this.productId },
+        params: { productId: modifiedProduct.toString() },
       });
     },
   },

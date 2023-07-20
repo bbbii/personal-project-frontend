@@ -8,7 +8,7 @@
           <div class="text-subtitle-1 text-medium-emphasis">
             상품 이미지
             <div id="imagePreview">
-              <img :src="product.productImageName ? getImageToS3(product.productImageName) : ''" />
+              <img :src="product.mainImageName ? getImageToS3(product.mainImageName) : ''" />
             </div>
           </div>
 
@@ -101,7 +101,7 @@ export default {
       this.$router
         .push({
           name: "ProductModifyPage",
-          params: { productId: this.product.productId },
+          params: { productId: this.product.productId.toString() },
         })
         .catch(() => {});
     },
