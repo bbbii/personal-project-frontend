@@ -9,23 +9,37 @@
           <span>PROJECT</span>
         </v-toolbar-title>
       </v-btn>
+
       <v-spacer></v-spacer>
-      <v-btn v-if="!isSignIn" text @click="signUp">
-        <span>회원가입</span>
-        <v-icon right>mdi-account-plus-outline</v-icon>
-      </v-btn>
-      <v-btn v-if="!isSignIn" text @click="signIn">
-        <span>로그인</span>
-        <v-icon right>mdi-login</v-icon>
-      </v-btn>
-      <span v-if="isSignIn">{{ this.userEmail }}님 안녕하세요</span>
-      <v-btn v-if="isSignIn" text :to="{ name: 'ProductRegisterPage' }">
-        <span>상품 등록</span>
-      </v-btn>
-      <v-btn v-if="isSignIn" text @click="signOut">
-        <span>로그아웃</span>
-        <v-icon right>mdi-exit-to-app</v-icon>
-      </v-btn>
+
+      <v-spacer></v-spacer>
+
+      <div v-if="!isSignIn">
+        <v-btn text @click="signUp">
+          <span>회원가입</span>
+          <v-icon right>mdi-account-plus-outline</v-icon>
+        </v-btn>
+        <v-btn text @click="signIn">
+          <span>로그인</span>
+          <v-icon right>mdi-login</v-icon>
+        </v-btn>
+      </div>
+
+      <div v-if="isSignIn">
+        <span>{{ this.userEmail }}님 안녕하세요</span>
+        <v-btn text :to="{ name: 'ProductRegisterPage' }">
+          <span>상품 등록</span>
+          <v-icon right>mdi-storefront-plus-outline</v-icon>
+        </v-btn>
+        <v-btn text :to="{ name: 'CartPage' }">
+          <span>장바구니</span>
+          <v-icon right>mdi-cart-outline</v-icon>
+        </v-btn>
+        <v-btn text @click="signOut">
+          <span>로그아웃</span>
+          <v-icon right>mdi-logout</v-icon>
+        </v-btn>
+      </div>
     </v-app-bar>
     <v-navigation-drawer app v-model="navigation_drawer">
       <v-list-item>
