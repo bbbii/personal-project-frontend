@@ -6,52 +6,46 @@
           <h2 class="text-center mb-3">상품 상세 페이지</h2>
 
           <div class="text-subtitle-1 text-medium-emphasis">
-            상품 이미지
             <div id="imagePreview">
               <img :src="product.mainImageName ? getImageToS3(product.mainImageName) : ''" />
             </div>
-          </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            상품명
-            <v-text-field
-              outlined
-              prepend-inner-icon="mdi-card-text-outline"
-              :value="product.productName"
-              readonly
-            />
-          </div>
+            <div>
+              상품명
+              <v-text-field
+                prepend-inner-icon="mdi-card-text-outline"
+                :value="product.productName"
+                readonly
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            가격
-            <v-text-field
-              outlined
-              prepend-inner-icon="mdi-currency-krw"
-              :value="product.productPrice"
-              readonly
-            />
-          </div>
+            <div>
+              가격
+              <v-text-field
+                prepend-inner-icon="mdi-currency-krw"
+                :value="product.productPrice"
+                readonly
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            상품 설명
-            <v-textarea
-              outlined
-              prepend-inner-icon="mdi-comment-text-outline"
-              :value="product.productDescription"
-              readonly
-            />
-          </div>
+            <div>
+              상품 설명
+              <v-textarea
+                prepend-inner-icon="mdi-comment-text-outline"
+                :value="product.productDescription"
+                readonly
+              />
+            </div>
 
-          <div class="text-subtitle-1 text-medium-emphasis">
-            태그
-            <v-text-field
-              outlined
-              prepend-inner-icon="mdi-label-outline"
-              :value="product.productTags"
-              readonly
-            />
+            <div>
+              태그
+              <v-text-field
+                prepend-inner-icon="mdi-label-outline"
+                :value="product.productTags"
+                readonly
+              />
+            </div>
           </div>
-
           <div style="display: flex; justify-content: space-between">
             <div>
               <template v-if="isRegister">
@@ -96,7 +90,6 @@ export default {
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
-    // Spring에서 처리하도록 수정 필요
     onModify() {
       this.$router
         .push({

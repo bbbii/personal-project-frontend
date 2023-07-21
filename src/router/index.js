@@ -2,8 +2,10 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
+
 import accountRoutes from "./account";
 import productRoutes from "./product";
+import cartRoutes from "./cart";
 import awsSdkRoutes from "./aws";
 
 Vue.use(VueRouter);
@@ -16,6 +18,7 @@ const routes = [
   },
   ...accountRoutes,
   ...productRoutes,
+  ...cartRoutes,
   ...awsSdkRoutes,
 ];
 
