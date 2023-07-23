@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <h2>장바구니</h2>
-    <cart-form :cart="cart" />
+    <cart-form :cart="cartItem" />
   </div>
 </template>
 
@@ -15,15 +15,22 @@ export default {
   components: {
     CartForm,
   },
+  data() {
+    return {
+      cartItem: [],
+    };
+  },
   computed: {
     ...mapState(cartModule, ["cart"]),
   },
   methods: {
     ...mapActions(cartModule, ["requestCartListToSpring"]),
   },
-  //   mounted() {
-  //     this.requestCartListToSpring();
-  //   },
+  mounted() {
+    const userEmail = localStorage.getItem("userEmail");
+    // console.log(userEmail);
+    this.requestCartListToSpring(userEmail);
+  },
 };
 </script>
 

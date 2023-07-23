@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 
 const cartRoutes = [
   {
-    path: "/cart",
+    path: "/cart-list",
     name: "CartPage",
     component: CartPage,
   },

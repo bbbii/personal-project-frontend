@@ -40,6 +40,7 @@
 
 <script>
 export default {
+  name: "CartForm",
   data() {
     return {
       mainImageNameList: [],
