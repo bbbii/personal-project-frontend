@@ -12,7 +12,7 @@
         <th align="center" width="10%">삭제</th>
       </tr>
       <tr v-if="!cart || (Array.isArray(cart) && cart.length === 0)">
-        <td align="center" colspan="4">장바구니가 비어있습니다{{ cart }}</td>
+        <td align="center" colspan="4">장바구니가 비어있습니다</td>
       </tr>
 
       <tr v-else v-for="item in cart" :key="item.productId">
@@ -56,6 +56,7 @@
         </td>
       </tr>
     </table>
+    <v-btn @click="removeAllItem">장바구니 비우기</v-btn>
   </div>
 </template>
 
@@ -78,7 +79,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(cartModule, ["requestDeleteCartItemToSpring"]),
+    ...mapActions(cartModule, ["requestDeleteCartItemToSpring", "requestDeleteAllItemToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
@@ -98,8 +99,31 @@ export default {
       console.log(item.id);
       this.requestDeleteCartItemToSpring(payload);
     },
+    removeAllItem() {
+      const arr = [];
+      for (let i = 0; i < this.cart.length; i++) {
+        arr.push(this.cart[i].id);
+      }
+      const payload = {
+        email: localStorage.getItem("userEmail"),
+        arr: arr,
+      };
+      this.$swal
+        .fire({
+          title: "장바구니를 비우겠습니까?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "장바구니 비우기",
+          cancelButtonText: "취소",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.requestDeleteAllItemToSpring(payload);
+          }
+        });
+    },
   },
-  async mounted() {
+  mounted() {
     this.getImageToS3();
   },
 };

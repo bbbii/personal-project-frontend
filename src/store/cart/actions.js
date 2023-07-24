@@ -32,7 +32,7 @@ export default {
   },
   requestDeleteCartItemToSpring({ commit }, payload) {
     const { email, id } = payload;
-    console.log(payload);
+    // console.log(payload);
     return axiosInstances.springAxiosInst
       .delete(`/cart/${id}`, { params: { email } })
       .then((res) => {
@@ -41,6 +41,17 @@ export default {
       })
       .catch((error) => {
         console.error("deleteToCart API 요청 실패:", error);
+      });
+  },
+  requestDeleteAllItemToSpring({ commit }, payload) {
+    const { email, arr } = payload;
+    return axiosInstances.springAxiosInst
+      .delete(`/cart?arr=${arr}`, { params: { email } })
+      .then((res) => {
+        commit(REQUEST_CART_LIST_TO_SPRING, res.data);
+      })
+      .catch((error) => {
+        console.error("deleteAllItem API 요청 실패:", error);
       });
   },
 };
