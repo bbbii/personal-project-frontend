@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <h2>장바구니</h2>
-    <cart-form :cart="cartItem" />
+    <cart-form :cart="cart" />
   </div>
 </template>
 
@@ -14,11 +14,6 @@ const cartModule = "cartModule";
 export default {
   components: {
     CartForm,
-  },
-  data() {
-    return {
-      cartItem: [],
-    };
   },
   computed: {
     ...mapState(cartModule, ["cart"]),

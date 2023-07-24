@@ -6,32 +6,53 @@
         <th align="center" width="10%">상품 번호</th>
         <th align="center" width="30%">상품 이미지</th>
         <th align="center" width="10%">상품명</th>
-        <th align="center" width="10%">상품 가격</th>
-        <th align="center" width="10%">개수</th>
+        <th align="center" width="10%">단가</th>
+        <th align="center" width="15%">개수</th>
+        <th align="center" width="10%">가격</th>
+        <th align="center" width="10%">삭제</th>
       </tr>
       <tr v-if="!cart || (Array.isArray(cart) && cart.length === 0)">
-        <td align="center" colspan="4">장바구니가 비어있습니다</td>
+        <td align="center" colspan="4">장바구니가 비어있습니다{{ cart }}</td>
       </tr>
 
-      <tr v-else v-for="product in cart" :key="product.productId">
+      <tr v-else v-for="item in cart" :key="item.productId">
         <td align="center">
-          {{ product.productId }}
+          {{ item.productId }}
         </td>
         <td align="center">
           <router-link
             :to="{
               name: 'ProductReadPage',
-              params: { productId: product.productId.toString() },
+              params: { productId: item.productId.toString() },
             }"
           >
-            <img class="image-preview" :src="getImageToS3(product.mainImageName)" />
+            <img class="image-preview" :src="getImageToS3(item.mainImageName)" />
           </router-link>
         </td>
         <td align="center">
-          {{ product.productName }}
+          {{ item.productName }}
         </td>
         <td align="center">
-          {{ product.productPrice }}
+          {{ item.productPrice }}
+        </td>
+        <td align="center">
+          <span>
+            <v-btn variant="text" icon @click="countDown(item)">
+              <v-icon>mdi-chevron-down</v-icon>
+            </v-btn>
+            {{ item.productCount }}
+            <v-btn variant="text" icon @click="countUp(item)">
+              <v-icon>mdi-chevron-up</v-icon>
+            </v-btn>
+          </span>
+        </td>
+        <td align="center">
+          {{ item.productPrice * item.productCount }}
+        </td>
+        <td align="center">
+          <v-btn variant="text" icon @click="removeItem(item)">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </td>
       </tr>
     </table>
@@ -55,6 +76,20 @@ export default {
   methods: {
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
+    },
+    countDown(item) {
+      if (item.productCount > 1) {
+        this.$set(item, "productCount", item.productCount - 1);
+      }
+    },
+    countUp(item) {
+      this.$set(item, "productCount", item.productCount + 1);
+    },
+    removeItem(item) {
+      const index = this.cart.indexOf(item);
+      if (index !== -1) {
+        this.cart.splice(index, 1);
+      }
     },
   },
   async mounted() {
