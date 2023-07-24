@@ -60,6 +60,10 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
+const cartModule = "cartModule";
+
 export default {
   name: "CartForm",
   data() {
@@ -74,6 +78,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(cartModule, ["requestDeleteCartItemToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
@@ -86,10 +91,12 @@ export default {
       this.$set(item, "productCount", item.productCount + 1);
     },
     removeItem(item) {
-      const index = this.cart.indexOf(item);
-      if (index !== -1) {
-        this.cart.splice(index, 1);
-      }
+      const payload = {
+        email: localStorage.getItem("userEmail"),
+        id: item.id,
+      };
+      console.log(item.id);
+      this.requestDeleteCartItemToSpring(payload);
     },
   },
   async mounted() {
@@ -98,4 +105,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+}
+</style>

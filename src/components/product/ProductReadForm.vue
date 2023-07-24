@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
-    ...mapActions(cartModule, ["requestAddCartItemToSpring", "requestDeleteCartItemToSpring"]),
+    ...mapActions(cartModule, ["requestAddCartItemToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
@@ -143,7 +143,7 @@ export default {
         productCount: this.productCount,
       };
       try {
-        const response = await this.requestAddCartItemToSpring(cartItem);
+        await this.requestAddCartItemToSpring(cartItem);
         this.$swal
           .fire({
             title: "상품을 장바구니에 담았습니다",

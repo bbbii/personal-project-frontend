@@ -30,14 +30,17 @@ export default {
         console.error("addToCart API 요청 실패:", error);
       });
   },
-  requestDeleteCartItemToSpring({ commit }, id) {
-    return axiosInstances.springAxiosInst.delete(`/cart/${id}`).then((res) => {
-      if (res.data != null) {
+  requestDeleteCartItemToSpring({ commit }, payload) {
+    const { email, id } = payload;
+    console.log(payload);
+    return axiosInstances.springAxiosInst
+      .delete(`/cart/${id}`, { params: { email } })
+      .then((res) => {
         commit(REQUEST_CART_LIST_TO_SPRING, res.data);
         return res.data;
-      } else {
+      })
+      .catch((error) => {
         console.error("deleteToCart API 요청 실패:", error);
-      }
-    });
+      });
   },
 };

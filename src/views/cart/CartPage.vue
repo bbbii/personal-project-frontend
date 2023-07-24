@@ -15,6 +15,11 @@ export default {
   components: {
     CartForm,
   },
+  data() {
+    return {
+      cartData: [],
+    };
+  },
   computed: {
     ...mapState(cartModule, ["cart"]),
   },
