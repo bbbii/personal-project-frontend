@@ -9,8 +9,6 @@
         <nav>
           <router-link to="/product-list">상품 목록</router-link><br/>
           <router-link to="/cart-list">장바구니</router-link><br/>
-          <router-link to="/order-list">주문 목록</router-link><br/>
-          <!-- <router-link to="/order-confirmation">이게뭐지</router-link><br/> -->
         </nav>
       </v-col>
     </v-row>

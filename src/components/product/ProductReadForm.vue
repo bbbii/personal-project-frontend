@@ -27,7 +27,7 @@
               가격
               <v-text-field
                 prepend-inner-icon="mdi-currency-krw"
-                :value="product.productPrice"
+                :value="product.productPrice | won"
                 readonly
               />
             </div>
@@ -64,7 +64,7 @@
             </div>
             <div class="product-total-price">
               총 가격
-              <input type="text" size="2" :value="product.productPrice * productCount" />
+              <input type="text" size="10" :value="(product.productPrice * productCount) | won" />
             </div>
           </div>
           <div style="display: flex; justify-content: space-between">

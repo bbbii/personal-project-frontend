@@ -30,7 +30,7 @@
           {{ product.productName }}
         </td>
         <td align="center">
-          {{ product.productPrice }}
+          {{ product.productPrice | won }}
         </td>
       </tr>
     </table>

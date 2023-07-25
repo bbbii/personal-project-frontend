@@ -2,11 +2,11 @@
   <v-row>
     <v-col cols="12">
       <swiper class="swiper" :options="swiperOption">
-        <swiper-slide><img src="@/assets/apple.png" /></swiper-slide>
-        <swiper-slide><img src="@/assets/grape.png" /></swiper-slide>
-        <swiper-slide><img src="@/assets/gyul.png" /></swiper-slide>
-        <swiper-slide><img src="@/assets/watermelon.png" /></swiper-slide>
-        <swiper-slide><img src="@/assets/mango.png" /></swiper-slide>
+        <swiper-slide><img class="image" src="@/assets/apple.png" /></swiper-slide>
+        <swiper-slide><img class="image" src="@/assets/grape.png" /></swiper-slide>
+        <swiper-slide><img class="image" src="@/assets/gyul.png" /></swiper-slide>
+        <swiper-slide><img class="image" src="@/assets/watermelon.png" /></swiper-slide>
+        <swiper-slide><img class="image" src="@/assets/mango.png" /></swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
         <!-- pagination  -->
 
@@ -53,15 +53,8 @@ export default {
 </script>
 
 <style scoped>
-.swiper {
-  height: 300px;
-  width: 100%;
-}
-.swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-weight: bold;
+.image {
+  max-width: 100%;
+  height: auto;
 }
 </style>

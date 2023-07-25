@@ -4,11 +4,11 @@
     <table style="margin: 10px">
       <tr>
         <th align="center" width="10%">상품 번호</th>
-        <th align="center" width="30%">상품 이미지</th>
+        <th align="center" width="30%">이미지</th>
         <th align="center" width="10%">상품명</th>
-        <th align="center" width="10%">단가</th>
-        <th align="center" width="15%">개수</th>
         <th align="center" width="10%">가격</th>
+        <th align="center" width="15%">수량</th>
+        <th align="center" width="10%">합계</th>
         <th align="center" width="10%">삭제</th>
       </tr>
       <tr v-if="!cart || (Array.isArray(cart) && cart.length === 0)">
@@ -33,21 +33,21 @@
           {{ item.productName }}
         </td>
         <td align="center">
-          {{ item.productPrice }}
+          {{ item.productPrice | won }}
         </td>
         <td align="center">
           <span>
-            <v-btn variant="text" icon @click="countDown(item)">
+            <v-btn variant="text" icon @click="countDown(item) & calcTotalPrice(cart)">
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
             {{ item.productCount }}
-            <v-btn variant="text" icon @click="countUp(item)">
+            <v-btn variant="text" icon @click="countUp(item) & calcTotalPrice(cart)">
               <v-icon>mdi-chevron-up</v-icon>
             </v-btn>
           </span>
         </td>
         <td align="center">
-          {{ item.productPrice * item.productCount }}
+          {{ (item.productPrice * item.productCount) | won }}
         </td>
         <td align="center">
           <v-btn variant="text" icon @click="removeItem(item)">
@@ -56,7 +56,13 @@
         </td>
       </tr>
     </table>
-    <v-btn @click="removeAllItem">장바구니 비우기</v-btn>
+
+    <div class="total-row">
+      <v-btn @click="removeAllItem">장바구니 비우기</v-btn>
+      <span class="price-text">
+        총 상품가격 <b class="total-price">{{ totalPrice | won }}</b>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -70,6 +76,7 @@ export default {
   data() {
     return {
       mainImageNameList: [],
+      totalPrice: 0,
     };
   },
   props: {
@@ -90,6 +97,13 @@ export default {
     },
     countUp(item) {
       this.$set(item, "productCount", item.productCount + 1);
+    },
+    calcTotalPrice(cart) {
+      var sum = 0;
+      for (let i = 0; i < cart.length; i++) {
+        sum += this.cart[i].productPrice * this.cart[i].productCount;
+      }
+      this.totalPrice = sum;
     },
     removeItem(item) {
       const payload = {
@@ -123,8 +137,17 @@ export default {
         });
     },
   },
+  watch: {
+    cart: {
+      deep: true,
+      handler() {
+        this.calcTotalPrice(this.cart);
+      },
+    },
+  },
   mounted() {
     this.getImageToS3();
+    this.calcTotalPrice(this.cart);
   },
 };
 </script>
@@ -134,5 +157,23 @@ img {
   width: 300px;
   height: 300px;
   object-fit: cover;
+}
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin-left: 5%;
+}
+.price-text {
+  min-width: 200px;
+  max-width: 80%;
+  white-space: nowrap;
+}
+.total-price {
+  font-size: 2em;
+  font-weight: 50px;
+  color: #060713;
+  margin-right: 10%;
 }
 </style>

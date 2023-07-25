@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueSweetalert2 from "vue-sweetalert2";
+import won from "./filters/won.js";
 
 import "sweetalert2/dist/sweetalert2.min.css";
 
@@ -13,7 +14,7 @@ const options = {
 };
 
 Vue.use(VueSweetalert2, options);
-
+Vue.filter("won", won);
 Vue.config.productionTip = false;
 
 new Vue({
