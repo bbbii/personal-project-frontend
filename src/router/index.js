@@ -8,6 +8,10 @@ import productRoutes from "./product";
 import cartRoutes from "./cart";
 import awsSdkRoutes from "./aws";
 
+import TosspayHome from "@/views/tosspay/TosspayHome.vue";
+import SuccessPage from "@/views/tosspay/SuccessPage.vue";
+import FailPage from "@/views/tosspay/FailPage.vue";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -20,6 +24,21 @@ const routes = [
   ...productRoutes,
   ...cartRoutes,
   ...awsSdkRoutes,
+  {
+    path: "/tosspay",
+    name: "Home",
+    component: TosspayHome,
+  },
+  {
+    path: "/tosspay-success",
+    name: "SuccessPage",
+    component: SuccessPage,
+  },
+  {
+    path: "/tosspay-fail",
+    name: "FailPage",
+    component: FailPage,
+  },
 ];
 
 const router = new VueRouter({
