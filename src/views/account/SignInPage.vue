@@ -21,7 +21,7 @@ export default {
         const email = await this.requestSpringToSignIn(payload);
         if (email) {
           console.log("로그인 성공: " + email);
-          this.$router.push("/");
+          this.$router.push("/").catch(() => {});
         }
       } catch (error) {
         console.log(error);

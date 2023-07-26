@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <hr />
     <div class="payment-type" id="payment-method"></div>
     <div class="total-price">
       <span>총 상품가격</span>
@@ -81,10 +80,10 @@ export default {
 </script>
 
 <style scoped>
-.hello {
+/* .hello {
   margin-top: 5%;
   margin-bottom: 10%;
-}
+} */
 .payment-type {
   text-align: center;
 }

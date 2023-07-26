@@ -8,9 +8,9 @@ import productRoutes from "./product";
 import cartRoutes from "./cart";
 import awsSdkRoutes from "./aws";
 
-import TosspayHome from "@/views/tosspay/TosspayHome.vue";
-import SuccessPage from "@/views/tosspay/SuccessPage.vue";
-import FailPage from "@/views/tosspay/FailPage.vue";
+import TosspayHome from "@/views/payment/toss/TosspayHome.vue";
+import SuccessPage from "@/views/payment/toss/SuccessPage.vue";
+import FailPage from "@/views/payment/toss/FailPage.vue";
 
 Vue.use(VueRouter);
 

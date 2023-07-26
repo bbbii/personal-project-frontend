@@ -63,8 +63,10 @@
               />
             </div>
             <div class="product-total-price">
-              총 가격
-              <input type="text" size="10" :value="(product.productPrice * productCount) | won" />
+              <b>
+                총 가격
+                <input type="text" size="10" :value="(product.productPrice * productCount) | won" />
+              </b>
             </div>
           </div>
           <div style="display: flex; justify-content: space-between">
@@ -185,5 +187,6 @@ export default {
 }
 .product-total-price {
   text-align: right;
+  font-size: large;
 }
 </style>
