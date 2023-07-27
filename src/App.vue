@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <NavMenuPage />
-      <router-view />
+      <router-view class="router-view-background" />
     </v-main>
     <v-footer>
       <FooterPage />
@@ -22,3 +22,9 @@ export default {
   }),
 };
 </script>
+
+<style>
+.router-view-background {
+  background-color: rgb(240, 252, 222);
+}
+</style>
