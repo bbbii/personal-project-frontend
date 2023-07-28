@@ -1,6 +1,6 @@
-<template lang="">
+<template>
   <nav>
-    <v-app-bar color="dark" app dark>
+    <v-app-bar class="z-index" color="dark" app dark>
       <v-app-bar-nav-icon @click="navigation_drawer = !navigation_drawer" />
       <v-btn @click="goToHome">
         <v-img class="mx-2" src="@/assets/apple.png" max-height="40" max-width="40" contain>
@@ -109,4 +109,8 @@ export default {
 };
 </script>
 
-<style lang=""></style>
+<style scoped>
+.z-index {
+  z-index: 999;
+}
+</style>

@@ -305,8 +305,12 @@ export default {
       this.mainImageName = mainFile.name;
     },
     uploadImage() {
-      console.log("파일 목록:" + this.$refs.files.files);
+      // console.log("파일 목록:" + this.$refs.files.files);
       let num = -1;
+      // console.log(this.files);길이
+      // if (this.files.length > 4) {
+      //   return this.$swal("상세 이미지는 최대 4장까지 등록할 수 있습니다.");
+      // }
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         const file = this.$refs.files.files[i];
         this.files.push({
@@ -315,13 +319,15 @@ export default {
           number: i,
         });
         num = i;
+        this.fileNames[i] = this.files[i].file.name;
       }
       this.uploadImageIndex = num + 1;
-      console.log(this.files);
-      this.fileNames = this.files.map((file) => file.name);
+      // console.log(this.files); // 파일이 든 배열
+      // console.log(this.files[0].file.name); // 이게 이름일거같음 -> 맞음
+      // console.log(this.fileNames);
     },
     uploadImage2() {
-      console.log(this.$refs.files.files);
+      // console.log(this.$refs.files.files);
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         const file = this.$refs.files.files[i];
         this.files.push({
@@ -330,10 +336,10 @@ export default {
           number: i + this.uploadImageIndex,
         });
         num = i;
+        this.fileNames[i] = this.files[i].file.name;
       }
       this.uploadImageIndex += num + 1;
-      console.log(this.files);
-      this.fileNames = this.files.map((file) => file.name);
+      // console.log(this.files);
     },
     fileDeleteButton(e) {
       const name = e.target.getAttribute("name");
@@ -364,7 +370,7 @@ export default {
           Body: this.mainFile.file,
           ACL: "public-read",
         },
-        (err, data) => {
+        (err) => {
           if (err) {
             console.log(err);
             return alert("메인 이미지 업로드 중 문제 발생", err.message);
@@ -379,7 +385,7 @@ export default {
             Body: file.file,
             ACL: "public-read",
           },
-          (err, data) => {
+          (err) => {
             if (err) {
               console.log(err);
               return alert("이미지 업로드 중 문제 발생", err.message);
@@ -615,7 +621,7 @@ export default {
   padding: 10px 20px;
   background-color: #232d4a;
   color: #fff;
-  vertical-align: middle;
+  vertical-align: auto;
   font-size: 15px;
   cursor: pointer;
   border-radius: 5px;
@@ -626,16 +632,17 @@ export default {
 }
 .file-preview-wrapper > img {
   position: relative;
-  width: 190px;
-  height: 130px;
-  z-index: 10;
+  max-width: 350px;
+  max-height: 350px;
+  object-fit: cover;
+  z-index: 1;
 }
 .file-close-button {
   position: absolute;
   line-height: 18px;
-  z-index: 99;
+  z-index: 2;
   font-size: 18px;
-  right: 5px;
+  right: 10px;
   top: 10px;
   color: #fff;
   font-weight: bold;
@@ -652,10 +659,9 @@ export default {
 }
 .file-preview-wrapper-upload {
   margin: 10px;
-  padding-top: 20px;
+  padding-top: 10px;
   background-color: #888888;
-  width: 190px;
-  height: 130px;
+  object-fit: contain;
 }
 p {
   font-weight: bold;

@@ -1,64 +1,111 @@
-<template lang="">
+<template>
   <v-container>
     <v-row justify="center">
       <v-col>
         <v-card class="mx-auto pa-12 pb-8" elevation="8" width="auto" rounded="lg">
           <h2 class="text-center mb-3">상품 상세 페이지</h2>
-
           <div class="text-subtitle-1 text-medium-emphasis">
             <div>
-              <template v-if="isRegister">
+              <div v-if="isRegister">
                 <v-btn class="ms-4" @click="onModify">수정</v-btn>
                 <v-btn class="ms-1" @click="onDelete">삭제</v-btn>
-              </template>
+              </div>
             </div>
-            <div id="imagePreview">
-              <img :src="product.mainImageName ? getImageToS3(product.mainImageName) : ''" />
-            </div>
-            <div>
-              상품명
-              <v-text-field
-                prepend-inner-icon="mdi-card-text-outline"
-                :value="product.productName"
-                readonly
-              />
-            </div>
-            <div>
-              가격
-              <v-text-field
-                prepend-inner-icon="mdi-currency-krw"
-                :value="product.productPrice | won"
-                readonly
-              />
-            </div>
-            <div>
-              수량
-              <div class="updown">
-                <span>
-                  <v-btn variant="text" icon @click="countDown">
-                    <v-icon>mdi-chevron-down</v-icon>
-                  </v-btn>
-                  <input class="updown-number" type="text" size="2" :value="productCount" />
-                  <v-btn variant="text" icon @click="countUp">
-                    <v-icon>mdi-chevron-up</v-icon>
-                  </v-btn>
-                </span>
+            <div class="product-main-content" style="display: flex; align-items: center">
+              <div
+                class="product-image"
+                style="display: flex; align-items: center; flexbasis: '60%'"
+              >
+                <img
+                  ref="mainImage"
+                  :src="
+                    selectedImage || product.mainImageName
+                      ? getImageToS3(selectedImage || product.mainImageName)
+                      : ''
+                  "
+                  :style="{ width: '400px', height: '400px', objectFit: 'cover', flexBasis: '60%' }"
+                  @click="swapImage"
+                />
+                <div
+                  style="display: flex; flex-basis: 40%; flex-direction: column; position: relative"
+                >
+                  <div
+                    v-for="(fileName, index) in product.imageNameList"
+                    :key="index"
+                    style="width: 100px; height: 100px; text-align: center"
+                  >
+                    <img
+                      :src="getImageToS3(fileName)"
+                      :style="{
+                        objectFit: 'cover',
+                        width: '100px',
+                        height: '100px',
+                        cursor: 'pointer',
+                      }"
+                      @click="selectedImage = fileName"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="main-info">
+                <p>상품명</p>
+                <v-text-field
+                  prepend-inner-icon="mdi-card-text-outline"
+                  :value="product.productName"
+                  readonly
+                />
+                <p>가격</p>
+                <v-text-field
+                  prepend-inner-icon="mdi-currency-krw"
+                  :value="(product.productPrice * productCount) | won"
+                  readonly
+                />
+                <p>수량</p>
+                <div class="updown">
+                  <span>
+                    {{ product.productAmount * productCount }} {{ product.productAmountUnit }}
+                    {{ product.productWeight * productCount }}{{ product.productWeightUnit }}
+                    <v-btn variant="text" icon @click="countDown">
+                      <v-icon>mdi-chevron-down</v-icon>
+                    </v-btn>
+                    <input class="updown-number" type="text" size="2" :value="productCount" />
+                    <v-btn variant="text" icon @click="countUp">
+                      <v-icon>mdi-chevron-up</v-icon>
+                    </v-btn>
+                  </span>
+                </div>
               </div>
             </div>
             <div>
-              상품 설명
+              <p>원산지</p>
+              <v-text-field
+                prepend-inner-icon="mdi-comment-text-outline"
+                :value="product.productOrigin"
+                readonly
+              />
+              <p>생산자</p>
+              <v-text-field
+                prepend-inner-icon="mdi-comment-text-outline"
+                :value="product.productProducer"
+                readonly
+              />
+              <p>startDate</p>
+              <v-text-field
+                prepend-inner-icon="mdi-comment-text-outline"
+                :value="product.startDate"
+                readonly
+              />
+              <p>endDate</p>
+              <v-text-field
+                prepend-inner-icon="mdi-comment-text-outline"
+                :value="product.endDate"
+                readonly
+              />
+              <p>상품 설명</p>
               <v-textarea
                 prepend-inner-icon="mdi-comment-text-outline"
                 :value="product.productDescription"
                 outlined
-                readonly
-              />
-            </div>
-            <div>
-              태그
-              <v-text-field
-                prepend-inner-icon="mdi-label-outline"
-                :value="product.productTags"
                 readonly
               />
             </div>
@@ -98,6 +145,8 @@ export default {
       userEmail: "",
       registerEmail: "",
       productCount: 1,
+
+      selectedImage: null,
     };
   },
   name: "ProductReadForm",
@@ -110,6 +159,11 @@ export default {
   methods: {
     ...mapActions(productModule, ["requestProductToSpring", "requestDeleteProductToSpring"]),
     ...mapActions(cartModule, ["requestAddCartItemToSpring"]),
+    swapImage() {
+      if (this.selectedImage) {
+        this.selectedImage = null;
+      }
+    },
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
@@ -177,10 +231,8 @@ export default {
 
 <style scoped>
 .product-image {
-  text-align: center;
-  object-fit: scale-down;
-  max-width: 300px;
-  max-height: 300px;
+  width: 500px;
+  height: 500px;
 }
 .updown-number {
   text-align: center;
@@ -188,5 +240,9 @@ export default {
 .product-total-price {
   text-align: right;
   font-size: large;
+}
+.main-info {
+  vertical-align: top;
+  margin-left: 40px;
 }
 </style>
