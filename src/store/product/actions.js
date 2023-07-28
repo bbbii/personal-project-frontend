@@ -12,8 +12,15 @@ export default {
     const {
       productName,
       productPrice,
+      productOrigin,
+      productProducer,
+      productAmount,
+      productAmountUnit,
+      productWeight,
+      productWeightUnit,
+      startDate,
+      endDate,
       productDescription,
-      productTags,
       mainImageName,
       imageNameList,
     } = payload;
@@ -21,8 +28,15 @@ export default {
       .post("/product/register", {
         productName,
         productPrice,
+        productOrigin,
+        productProducer,
+        productAmount,
+        productAmountUnit,
+        productWeight,
+        productWeightUnit,
+        startDate,
+        endDate,
         productDescription,
-        productTags,
         mainImageName,
         imageNameList,
       })

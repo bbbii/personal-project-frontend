@@ -6,20 +6,20 @@
           <h2 class="text-center mb-3">상품 등록</h2>
 
           <form class="text-subtitle-1 text-medium-emphasis">
-            <div class="room-deal-information-container">
-              <div class="room-deal-information-title">상품 사진 등록</div>
-              <div class="room-picture-notice">
-                <ul class="room-write-wrapper">
+            <div class="information-container">
+              <div class="information-title">상품 이미지 등록</div>
+              <div class="picture-notice">
+                <ul class="write-wrapper">
                   <li>사진은 가로로 찍은 사진을 권장합니다. (가로 사이즈 최소 800px)</li>
                   <li>사진 용량은 사진 한 장당 10MB 까지 등록이 가능합니다.</li>
                 </ul>
               </div>
-              <div class="room-file-upload-wrapper">
-                <div v-if="!mainFile" class="room-file-image-example-wrapper">
+              <div class="file-upload-wrapper">
+                <div v-if="!mainFile" class="file-image-example-wrapper">
                   <b>대표 이미지</b>
-                  <div class="room-file-notice-item">
+                  <div class="file-notice-item">
                     상품 목록에 보여지는 대표 이미지에요
-                    <div class="room-file-notice-item room-file-upload-button">
+                    <div class="file-notice-item file-upload-button">
                       <div class="image-box">
                         <label for="mainFile">이미지 등록하기</label>
                         <input type="file" id="mainFile" ref="mainFile" @change="uploadMainImage" />
@@ -35,16 +35,16 @@
                   </div>
                 </div>
               </div>
-              <div class="room-file-upload-wrapper">
-                <div v-if="!files.length" class="room-file-upload-example-container">
-                  <div class="room-file-upload-example">
-                    <div class="room-file-image-example-wrapper"><b>상품 상세 이미지</b></div>
-                    <div class="room-file-notice-item">상품을 예쁘게 찍어서 등록해보세요</div>
-                    <div class="room-file-notice-item room-file-notice-item-red">
+              <div class="file-upload-wrapper">
+                <div v-if="!files.length" class="file-upload-example-container">
+                  <div class="file-upload-example">
+                    <div class="file-image-example-wrapper"><b>상품 상세 이미지</b></div>
+                    <div class="file-notice-item">상품을 예쁘게 찍어서 등록해보세요</div>
+                    <div class="file-notice-item file-notice-item-red">
                       로고를 제외한 불필요한 정보(워터마크,상호,전화번호 등)가 있는 매물은
                       비공개처리됩니다
                     </div>
-                    <div class="room-file-notice-item room-file-upload-button">
+                    <div class="file-notice-item file-upload-button">
                       <div class="image-box">
                         <label for="file">이미지 등록하기</label>
                         <input type="file" id="file" ref="files" multiple @change="uploadImage" />
@@ -71,11 +71,12 @@
               </div>
             </div>
 
-            <div>
+            <div style="padding-top: 10px">
               <v-row justify="center">
                 <v-col cols="12" id="menu">
                   <p>상품명</p>
                   <v-text-field
+                    outlined
                     placeholder="상품 이름을 적어주세요"
                     v-model="productName"
                     prepend-inner-icon="mdi-card-text-outline"
@@ -83,44 +84,155 @@
                   />
                 </v-col>
               </v-row>
-            </div>
-
-            <div>
               <v-row justify="center">
-                <v-col cols="12" id="menu">
-                  가격
+                <v-col cols="4" id="menu">
+                  <p>가격</p>
                   <v-text-field
+                    outlined
+                    placeholder="숫자만 입력"
                     v-model="productPrice"
                     prepend-inner-icon="mdi-currency-krw"
                     :rules="[(v) => !!v || '상품가격을 입력해주세요!']"
                   />
                 </v-col>
-              </v-row>
-            </div>
-
-            <div>
-              <v-row justify="center">
-                <v-col cols="12" id="menu">
-                  상품 설명
-                  <v-textarea
-                    auto-grow
+                <v-col cols="4" id="menu">
+                  <p>원산지</p>
+                  <v-text-field
                     outlined
-                    v-model="productDescription"
+                    placeholder="원산지를 적어주세요"
+                    v-model="productOrigin"
                     prepend-inner-icon="mdi-comment-text-outline"
-                    :rules="[(v) => !!v || '상품설명을 입력해주세요!']"
+                    :rules="[(v) => !!v || '원산지를 입력해주세요!']"
+                  />
+                </v-col>
+                <v-col cols="4" id="menu">
+                  <p>생산자</p>
+                  <v-text-field
+                    outlined
+                    placeholder="생산자를 적어주세요"
+                    v-model="productProducer"
+                    prepend-inner-icon="mdi-comment-text-outline"
+                    :rules="[(v) => !!v || '생산자를 입력해주세요!']"
                   />
                 </v-col>
               </v-row>
-            </div>
 
-            <div>
               <v-row justify="center">
-                <v-col cols="12" id="menu">
-                  태그
-                  <v-text-field
-                    v-model="productTags"
-                    hide-details="auto"
-                    prepend-inner-icon="mdi-label-outline"
+                <v-col cols="6" id="menu">
+                  <p>포장단위</p>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        outlined
+                        placeholder="0"
+                        v-model="productAmount"
+                        prepend-inner-icon="mdi-comment-text-outline"
+                        :rules="[(v) => !!v || '단위를 입력해주세요!']"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        outlined
+                        v-model="productAmountUnit"
+                        :items="['상자', '개']"
+                        variant="underlined"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="6" id="menu">
+                  <p>중량</p>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        outlined
+                        placeholder="0"
+                        v-model="productWeight"
+                        prepend-inner-icon="mdi-comment-text-outline"
+                        :rules="[(v) => !!v || '중량을 입력해주세요!']"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        outlined
+                        v-model="productWeightUnit"
+                        :items="['kg', 'g']"
+                        variant="underlined"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <p>제조 또는 생산년월일</p>
+                  <v-menu
+                    ref="startMenu"
+                    v-model="startMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="startDate"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="startDate"
+                        label="제조 또는 생산년월일"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-text-field>
+                    </template>
+                    <v-date-picker v-model="startDate" no-title locale="kr" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="startMenu = false"> Cancel </v-btn>
+                      <v-btn text color="primary" @click="$refs.startMenu.save(startDate)">
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+
+                  <p>소비기한 또는 품질유지기한</p>
+                  <v-menu
+                    ref="endMenu"
+                    v-model="endMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="endDate"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="endDate"
+                        label="소비기한 또는 품질유지기한"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-text-field>
+                    </template>
+                    <v-date-picker v-model="endDate" no-title locale="kr" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="endMenu = false"> Cancel </v-btn>
+                      <v-btn text color="primary" @click="$refs.endMenu.save(endDate)"> OK </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col>
+                  <p>상품 설명</p>
+                  <v-textarea
+                    outlined
+                    placeholder="상품의 설명을 적어주세요"
+                    v-model="productDescription"
+                    rows="7"
+                    prepend-inner-icon="mdi-comment-text-outline"
+                    :rules="[(v) => !!v || '상품설명을 입력해주세요!']"
                   />
                 </v-col>
               </v-row>
@@ -148,9 +260,16 @@ export default {
   data() {
     return {
       productName: "",
-      productPrice: 0,
+      productPrice: null,
+      productOrigin: "",
+      productProducer: "",
+      productAmount: null,
+      productAmountUnit: "상자",
+      productWeight: null,
+      productWeightUnit: "kg",
+      startDate: "",
+      endDate: "",
       productDescription: "",
-      productTags: "",
 
       s3: null,
       awsBucketName: "vue-s3-3737",
@@ -163,6 +282,15 @@ export default {
       mainImageName: "",
       fileNames: [],
       imageNameList: [],
+
+      startMenu: false,
+      endMenu: false,
+      startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
     };
   },
   methods: {
@@ -296,16 +424,30 @@ export default {
             const {
               productName,
               productPrice,
+              productOrigin,
+              productProducer,
+              productAmount,
+              productAmountUnit,
+              productWeight,
+              productWeightUnit,
+              startDate,
+              endDate,
               productDescription,
-              productTags,
               mainImageName,
               imageNameList,
             } = this;
             this.$emit("submit", {
               productName,
               productPrice,
+              productOrigin,
+              productProducer,
+              productAmount,
+              productAmountUnit,
+              productWeight,
+              productWeightUnit,
+              startDate,
+              endDate,
               productDescription,
-              productTags,
               mainImageName,
               imageNameList,
             });
@@ -325,25 +467,18 @@ export default {
 </script>
 
 <style scoped>
-.room-deal-information-container {
+.information-container {
   margin-top: 50px;
   color: #222222;
   border: 1px solid #dddddd;
 }
-
-.room-deal-information-title {
+.information-title {
   text-align: center;
   font-size: 18px;
   line-height: 60px;
   border-bottom: 1px solid #dddddd;
 }
-
-.room-deal-information-content-wrapper {
-  min-height: 50px;
-  display: flex;
-}
-
-.room-deal-informtaion-content-title {
+.informtaion-content-title {
   font-size: 15px;
   display: flex;
   align-items: center;
@@ -351,19 +486,7 @@ export default {
   width: 150px;
   background-color: #f9f9f9;
 }
-
-.room-deal-information-content {
-  width: 100%;
-  font-size: 14px;
-}
-
-.room-deal-option-selector {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-}
-
-.room-deal-option-item {
+.option-item {
   width: 100px;
   height: 40px;
   display: flex;
@@ -373,37 +496,26 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-
-.room-deal-option-item:last-child {
+.option-item:last-child {
   margin-left: 10px;
 }
-
-.room-deal-option-notice {
+.option-notice {
   margin-left: auto;
   font-size: 14px;
   color: #888888;
 }
-
-.room-deal-option-item-deposit {
+.option-item-deposit {
   margin-left: 10px;
 }
-
-.room-deal-information-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.room-deal-information-option {
+.information-option {
   padding: 10px;
   display: flex;
   align-items: center;
 }
-
-.room-deal-information-option:last-child {
+.information-option:last-child {
   border-bottom: 1px solid #dddddd;
 }
-
-.room-deal-information-item-type {
+.information-item-type {
   font-size: 13px;
   color: #fff;
   background-color: #61b6e5;
@@ -414,48 +526,31 @@ export default {
   align-items: center;
   border-radius: 3px;
 }
-
-.room-deal-information-item-wrapper {
+.information-item-wrapper {
   display: flex;
   align-items: center;
   margin-left: 10px;
   height: 46px;
   width: 100%;
 }
-
-.room-deal-information-item-wrapper > input {
+.information-item-wrapper > input {
   border: 1px solid #dddddd;
   width: 140px;
   height: 100%;
   padding: 0 15px;
   font-size: 15px;
 }
-
-.room-deal-inforamtion-won {
+.inforamtion-won {
   margin: 0 10px;
 }
-
-.room-deal-information-example {
-  color: #888888;
-}
-
-.room-deal-information-option:not(:first-child) {
+.information-option:not(:first-child) {
   margin-top: 10px;
 }
-
-.room-deal-inforamtion-divide {
-  font-size: 22px;
-  margin: 0 8px;
-  color: #222222;
-  font-weight: 100;
-}
-
-.room-deal-close-button-wrapper {
+.close-button-wrapper {
   margin-left: auto;
   cursor: pointer;
 }
-
-.room-deal-close-button {
+.close-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -464,32 +559,18 @@ export default {
   background-color: #666666;
   color: rgb(220, 220, 220);
 }
-
-.room-deal-cliked {
-  background-color: rgb(235, 235, 235);
-  color: rgb(170, 170, 170);
-}
-
-.room-file-upload-example {
+.file-upload-example {
   height: 100%;
 }
-
-.room-write-content-container {
-  border-top: 1px solid #dddddd;
-  min-height: 260px;
-}
-
-.room-picture-notice {
+.picture-notice {
   margin: 20px;
   padding: 20px 40px;
   border: 1px solid #dddddd;
 }
-
 .file-preview-content-container {
   height: 100%;
 }
-
-.room-file-upload-wrapper {
+.file-upload-wrapper {
   margin: 20px;
   border: 1px solid #dddddd;
   background-color: #f4f4f4;
@@ -501,32 +582,26 @@ export default {
   justify-content: center;
   height: 100%;
 }
-
-.room-file-upload-example-container {
+.file-upload-example-container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.room-file-image-example-wrapper {
+.file-image-example-wrapper {
   text-align: center;
 }
-
-.room-file-notice-item {
+.file-notice-item {
   margin-top: 5px;
   text-align: center;
 }
-
-.room-file-notice-item-red {
+.file-notice-item-red {
   color: #ef4351;
 }
-
 .image-box {
   margin-top: 30px;
   padding-bottom: 20px;
   text-align: center;
 }
-
 .image-box input[type="file"] {
   position: absolute;
   width: 0;
@@ -535,7 +610,6 @@ export default {
   overflow: hidden;
   border: 0;
 }
-
 .image-box label {
   display: inline-block;
   padding: 10px 20px;
@@ -546,19 +620,16 @@ export default {
   cursor: pointer;
   border-radius: 5px;
 }
-
 .file-preview-wrapper {
   padding: 10px;
   position: relative;
 }
-
 .file-preview-wrapper > img {
   position: relative;
   width: 190px;
   height: 130px;
   z-index: 10;
 }
-
 .file-close-button {
   position: absolute;
   line-height: 18px;
@@ -574,13 +645,11 @@ export default {
   text-align: center;
   cursor: pointer;
 }
-
 .file-preview-container {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
 }
-
 .file-preview-wrapper-upload {
   margin: 10px;
   padding-top: 20px;
@@ -588,33 +657,7 @@ export default {
   width: 190px;
   height: 130px;
 }
-
-.room-write-button-wrapper {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #222222;
-}
-
-.room-write-button-wrapper > div {
-  width: 160px;
-  height: 50px;
-  border: 1px solid #dddddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.room-write-button {
-  margin-left: 15px;
-  color: #fff;
-  background-color: #1564f9;
-}
-
-.room-write-button:hover {
-  opacity: 0.8;
+p {
+  font-weight: bold;
 }
 </style>

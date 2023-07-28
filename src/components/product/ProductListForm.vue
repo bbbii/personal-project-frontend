@@ -1,6 +1,5 @@
 <template lang="">
   <div class="data_table">
-    <h3>상품 목록</h3>
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 lg3 v-for="(product, index) in products" :key="index">

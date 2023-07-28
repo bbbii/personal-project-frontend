@@ -24,7 +24,8 @@ export default {
 </script>
 
 <style>
-.router-view-background {
-  background-color: rgb(240, 252, 222);
+.v-main__wrap {
+  padding: 16px;
+  background-color: rgb(251, 255, 246);
 }
 </style>
