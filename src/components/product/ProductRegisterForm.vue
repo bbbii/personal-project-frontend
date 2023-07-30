@@ -39,12 +39,12 @@
                 <div v-if="!files.length" class="file-upload-example-container">
                   <div class="file-upload-example">
                     <div class="file-image-example-wrapper"><b>상품 상세 이미지</b></div>
-                    <div class="file-notice-item">상품을 예쁘게 찍어서 등록해보세요</div>
+                    <div class="file-notice-item">최대 4장까지 추가로 등록할 수 있습니다</div>
                     <div class="file-notice-item file-notice-item-red">
-                      로고를 제외한 불필요한 정보(워터마크,상호,전화번호 등)가 있는 매물은
+                      로고를 제외한 불필요한 정보(워터마크, 전화번호 등)가 있는 이미지는
                       비공개처리됩니다
                     </div>
-                    <div class="file-notice-item file-upload-button">
+                    <div class="file-notice-item file-upload-button" v-if="files.length < 4">
                       <div class="image-box">
                         <label for="file">이미지 등록하기</label>
                         <input type="file" id="file" ref="files" multiple @change="uploadImage" />
@@ -60,7 +60,7 @@
                       </div>
                       <img :src="file.preview" />
                     </div>
-                    <div class="file-preview-wrapper-upload">
+                    <div class="file-preview-wrapper-upload" v-if="files.length < 4">
                       <div class="image-box">
                         <label for="file">이미지 추가 등록</label>
                         <input type="file" id="file" ref="files" multiple @change="uploadImage2" />
@@ -307,10 +307,10 @@ export default {
     uploadImage() {
       // console.log("파일 목록:" + this.$refs.files.files);
       let num = -1;
-      // console.log(this.files);길이
-      // if (this.files.length > 4) {
-      //   return this.$swal("상세 이미지는 최대 4장까지 등록할 수 있습니다.");
-      // }
+      if (this.files.length + this.$refs.files.files.length > 4) {
+        alert("상세 이미지는 최대 4장 업로드할 수 있습니다.");
+        return;
+      }
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         const file = this.$refs.files.files[i];
         this.files.push({
@@ -328,6 +328,10 @@ export default {
     },
     uploadImage2() {
       // console.log(this.$refs.files.files);
+      if (this.files.length + this.$refs.files.files.length > 4) {
+        alert("상세 이미지는 최대 4장 업로드할 수 있습니다.");
+        return;
+      }
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         const file = this.$refs.files.files[i];
         this.files.push({
@@ -364,35 +368,46 @@ export default {
     },
     uploadAwsS3() {
       this.awsS3Config();
-      this.s3.upload(
-        {
-          Key: this.mainFile.file.name,
-          Body: this.mainFile.file,
-          ACL: "public-read",
-        },
-        (err) => {
-          if (err) {
-            console.log(err);
-            return alert("메인 이미지 업로드 중 문제 발생", err.message);
-          }
-          console.log("메인 이미지 업로드 성공!");
-        }
-      );
-      this.files.forEach((file) => {
+      return new Promise((resolve, reject) => {
+        let count = 0;
         this.s3.upload(
           {
-            Key: file.file.name,
-            Body: file.file,
+            Key: this.mainFile.file.name,
+            Body: this.mainFile.file,
             ACL: "public-read",
           },
           (err) => {
             if (err) {
               console.log(err);
-              return alert("이미지 업로드 중 문제 발생", err.message);
+              return alert("메인 이미지 업로드 중 문제 발생", err.message);
             }
-            console.log(`파일 ${file.file.name} 업로드 성공`);
+            console.log("메인 이미지 업로드 성공!");
+
+            if (++count === this.files.length + 1) {
+              resolve();
+            }
           }
         );
+        this.files.forEach((file) => {
+          this.s3.upload(
+            {
+              Key: file.file.name,
+              Body: file.file,
+              ACL: "public-read",
+            },
+            (err) => {
+              if (err) {
+                console.log(err);
+                return alert("이미지 업로드 중 문제 발생", err.message);
+              }
+              console.log(`파일 ${file.file.name} 업로드 성공`);
+
+              if (++count === this.files.length + 1) {
+                resolve();
+              }
+            }
+          );
+        });
       });
     },
     async onSubmit() {
@@ -423,10 +438,10 @@ export default {
           if (result.isConfirmed) {
             this.$swal.fire("상품이 등록되었습니다!", "", "success");
             // this.mainImageName = this.mainFile.name;
-            console.log(this.mainImageName);
+            // console.log(this.mainImageName);
 
             this.imageNameList = this.fileNames;
-            this.uploadAwsS3();
+            await this.uploadAwsS3();
             const {
               productName,
               productPrice,

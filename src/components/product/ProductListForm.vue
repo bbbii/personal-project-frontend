@@ -26,7 +26,7 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-btn outlined color="green">
+              <v-btn outlined color="green" @click="addCart(product)">
                 <v-icon>mdi-cart-arrow-down</v-icon>
                 장바구니 담기
               </v-btn>
@@ -42,6 +42,10 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
+const cartModule = "cartModule";
+
 export default {
   data() {
     return {
@@ -55,8 +59,40 @@ export default {
     },
   },
   methods: {
+    ...mapActions(cartModule, ["requestAddCartItemToSpring"]),
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
+    },
+    async addCart(product) {
+      console.log(product);
+      const cartItem = {
+        email: localStorage.getItem("userEmail"),
+        productId: product.productId,
+        productCount: 1,
+      };
+      try {
+        await this.requestAddCartItemToSpring(cartItem);
+        this.$swal
+          .fire({
+            title: "상품을 장바구니에 담았습니다",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "장바구니로 이동",
+            cancelButtonText: "확인",
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              this.$router.push("/cart-list").catch(() => {});
+            }
+          });
+      } catch (error) {
+        this.$swal.fire({
+          title: "상품을 장바구니에 담을 수 없습니다",
+          text: "다시 시도해주세요.",
+          icon: "error",
+        });
+        console.error("addCart API 요청 실패:", error);
+      }
     },
   },
 };

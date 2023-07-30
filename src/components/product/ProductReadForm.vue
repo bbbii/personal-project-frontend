@@ -3,14 +3,8 @@
     <v-row justify="center">
       <v-col>
         <v-card class="mx-auto pa-12 pb-8" elevation="8" width="auto" rounded="lg">
-          <h2 class="text-center mb-3">상품 상세 페이지</h2>
+          <h2 class="text-center mb-3">{{ product.productName }}</h2>
           <div class="text-subtitle-1 text-medium-emphasis">
-            <div>
-              <div v-if="isRegister">
-                <v-btn class="ms-4" @click="onModify">수정</v-btn>
-                <v-btn class="ms-1" @click="onDelete">삭제</v-btn>
-              </div>
-            </div>
             <div class="product-main-content" style="display: flex; align-items: center">
               <div
                 class="product-image"
@@ -48,27 +42,27 @@
                 </div>
               </div>
               <div class="main-info">
-                <p>상품명</p>
-                <v-text-field
-                  prepend-inner-icon="mdi-card-text-outline"
-                  :value="product.productName"
-                  readonly
-                />
-                <p>가격</p>
-                <v-text-field
-                  prepend-inner-icon="mdi-currency-krw"
-                  :value="(product.productPrice * productCount) | won"
-                  readonly
-                />
-                <p>수량</p>
-                <div class="updown">
+                <div class="product-name-style">
+                  {{ product.productName }}
+                </div>
+                <div class="product-price-style">
+                  {{ (product.productPrice * productCount) | won }}
+                </div>
+                <div class="product-unit-style">
                   <span>
-                    {{ product.productAmount * productCount }} {{ product.productAmountUnit }}
-                    {{ product.productWeight * productCount }}{{ product.productWeightUnit }}
+                    {{ product.productAmount * productCount }}&nbsp;{{ product.productAmountUnit }}
+                    &nbsp;
+                    {{ product.productWeight * productCount }}&nbsp;{{ product.productWeightUnit }}
                     <v-btn variant="text" icon @click="countDown">
                       <v-icon>mdi-chevron-down</v-icon>
                     </v-btn>
-                    <input class="updown-number" type="text" size="2" :value="productCount" />
+                    <input
+                      class="updown-number"
+                      type="text"
+                      size="2"
+                      :value="productCount"
+                      readonly
+                    />
                     <v-btn variant="text" icon @click="countUp">
                       <v-icon>mdi-chevron-up</v-icon>
                     </v-btn>
@@ -77,37 +71,33 @@
               </div>
             </div>
             <div>
-              <p>원산지</p>
-              <v-text-field
-                prepend-inner-icon="mdi-comment-text-outline"
-                :value="product.productOrigin"
-                readonly
-              />
-              <p>생산자</p>
-              <v-text-field
-                prepend-inner-icon="mdi-comment-text-outline"
-                :value="product.productProducer"
-                readonly
-              />
-              <p>startDate</p>
-              <v-text-field
-                prepend-inner-icon="mdi-comment-text-outline"
-                :value="product.startDate"
-                readonly
-              />
-              <p>endDate</p>
-              <v-text-field
-                prepend-inner-icon="mdi-comment-text-outline"
-                :value="product.endDate"
-                readonly
-              />
-              <p>상품 설명</p>
-              <v-textarea
-                prepend-inner-icon="mdi-comment-text-outline"
-                :value="product.productDescription"
-                outlined
-                readonly
-              />
+              <p><b>필수 표기정보</b></p>
+              <table>
+                <colgroup>
+                  <col width="150px" />
+                  <col width="340px" />
+                  <col width="150px" />
+                  <col width="*" />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <th>원산지</th>
+                    <td>{{ product.productOrigin }}</td>
+                    <th>생산자</th>
+                    <td>{{ product.productProducer }}</td>
+                  </tr>
+                  <tr>
+                    <th>생산일자</th>
+                    <td>{{ product.startDate }}</td>
+                    <th>품질유지기한</th>
+                    <td>{{ product.endDate }}</td>
+                  </tr>
+                  <tr>
+                    <th>상품 설명</th>
+                    <td>{{ product.productDescription }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="product-total-price">
               <b>
@@ -121,7 +111,10 @@
               <v-btn class="text-right" @click="goToList">목록으로</v-btn>
             </div>
             <div>
-              <v-btn class="text-right" @click="addCart">장바구니에 담기</v-btn>
+              <v-btn class="text-right" @click="addCart">
+                <v-icon>mdi-cart-arrow-down</v-icon>
+                장바구니에 담기
+              </v-btn>
             </div>
           </div>
         </v-card>
@@ -141,7 +134,6 @@ export default {
     return {
       productImage: "",
       receivedImage: "",
-      isRegister: true,
       userEmail: "",
       registerEmail: "",
       productCount: 1,
@@ -166,20 +158,6 @@ export default {
     },
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
-    },
-    onModify() {
-      this.$router
-        .push({
-          name: "ProductModifyPage",
-          params: { productId: this.product.productId.toString() },
-        })
-        .catch(() => {});
-    },
-    async onDelete() {
-      this.$swal("상품이 삭제되었습니다");
-      localStorage.removeItem("productImage");
-      await this.requestDeleteProductToSpring(this.product.productId);
-      await this.$router.push("/product-list").catch(() => {});
     },
     goToList() {
       this.$router.push("/product-list").catch(() => {});
@@ -232,7 +210,8 @@ export default {
 <style scoped>
 .product-image {
   width: 500px;
-  height: 500px;
+  height: 400px;
+  margin: 10px;
 }
 .updown-number {
   text-align: center;
@@ -244,5 +223,31 @@ export default {
 .main-info {
   vertical-align: top;
   margin-left: 40px;
+}
+.product-name-style {
+  font-size: large;
+  font-weight: bold;
+  padding-bottom: 30px;
+}
+.product-price-style {
+  color: tomato;
+  font-weight: bold;
+  padding-bottom: 15px;
+}
+.product-unit-style {
+  color: forestgreen;
+}
+table {
+  width: 100%;
+  border-top: 1px solid #444444;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid #aaaaaa;
+  padding: 10px;
+  font-weight: 400;
+  font-size: small;
 }
 </style>
