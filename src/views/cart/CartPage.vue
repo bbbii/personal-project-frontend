@@ -3,10 +3,6 @@
     <h2>장바구니</h2>
     <cart-form :cart="cart" />
     <details>
-      <summary class="give-me-money">Kakao 결제하기</summary>
-      <kakaopay-home :cart="cart" />
-    </details>
-    <details>
       <summary class="give-me-money">Toss 결제하기</summary>
       <tosspay-home :cart="cart" />
     </details>
@@ -16,15 +12,13 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import CartForm from "@/components/cart/CartForm.vue";
-import KakaopayHome from "@/views/payment/kakao/KakaopayHome.vue";
-import TosspayHome from "@/views/payment/toss/TosspayHome.vue";
+import TosspayHome from "@/views/payment/TosspayHome.vue";
 
 const cartModule = "cartModule";
 
 export default {
   components: {
     CartForm,
-    KakaopayHome,
     TosspayHome,
   },
   data() {

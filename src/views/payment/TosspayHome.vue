@@ -3,13 +3,13 @@
     <div class="payment-type" id="payment-method"></div>
     <div class="total-price">
       <span>총 상품가격</span>
-      <b class="priceInfo">{{ totalPrice | won }}</b>
+      <b class="price-info">{{ totalPrice | won }}</b>
       <v-icon>mdi-plus</v-icon>
       <span>총 배송비</span>
-      <b class="priceInfo">{{ deliveryFee | won }}</b>
+      <b class="price-info">{{ deliveryFee | won }}</b>
       <v-icon>mdi-equal</v-icon>
       <span>총 주문금액</span>
-      <b class="priceInfo">{{ (totalPrice + deliveryFee) | won }}</b>
+      <b class="price-info">{{ (totalPrice + deliveryFee) | won }}</b>
     </div>
     <div class="button-style">
       <v-btn large @click="goToList">목록으로</v-btn>
@@ -23,7 +23,7 @@ import { generateRandomString } from "@/utility/util";
 import env from "@/env";
 
 const clientKey = env.api.TOSS_API_KEY;
-const customerKey = "rot2DuJyq9UMKRuoWMtZQ";
+const customerKey = generateRandomString();
 const paymentWidget = PaymentWidget(clientKey, customerKey);
 
 export default {
@@ -37,11 +37,14 @@ export default {
     return {
       totalPrice: 0,
       deliveryFee: 4000,
+      productsName: "",
     };
   },
   async mounted() {
     this.calcTotalPrice(this.cart);
-    paymentWidget.renderPaymentMethods("#payment-method", { value: this.totalPrice });
+    paymentWidget.renderPaymentMethods("#payment-method", {
+      value: this.totalPrice + this.deliveryFee,
+    });
   },
   watch: {
     cart: {
@@ -59,19 +62,32 @@ export default {
       }
       this.totalPrice = sum;
     },
+    setProductName() {
+      if (this.cart.length == 1) {
+        this.productsName = `${this.cart[0].productName}`;
+      } else {
+        this.productsName = `${this.cart[0].productName} 외 ${this.cart.length - 1}개`;
+      }
+      // console.log(this.cart);
+      // console.log(this.cart[0].productName);
+      // console.log(this.productsName);
+    },
     goToList() {
       this.$router.push("/product-list").catch(() => {});
     },
     clickPaymentButton() {
-      paymentWidget.renderPaymentMethods("#payment-method", { value: this.totalPrice });
+      this.setProductName();
+      paymentWidget.renderPaymentMethods("#payment-method", {
+        value: this.totalPrice + this.deliveryFee,
+      });
       paymentWidget
         .requestPayment({
           orderId: generateRandomString(),
-          orderName: "과일세트",
+          orderName: `${this.productsName}`,
           successUrl: window.location.origin + "/tosspay-success",
           failUrl: window.location.origin + "/tosspay-fail",
-          customerEmail: "hyeongjin1326@gmail.com", // 고객 이메일 (선택)
-          customerName: "김형진", // 고객 이름 (선택)
+          customerEmail: localStorage.getItem("userEmail"),
+          customerName: "1",
         })
         .then((v) => console.log(v));
     },
@@ -80,10 +96,6 @@ export default {
 </script>
 
 <style scoped>
-/* .hello {
-  margin-top: 5%;
-  margin-bottom: 10%;
-} */
 .payment-type {
   text-align: center;
 }
@@ -102,7 +114,7 @@ export default {
   flex-wrap: wrap;
   width: 100%;
 }
-.priceInfo {
+.price-info {
   font-size: 2em;
   margin-right: 1%;
   margin-left: 1%;

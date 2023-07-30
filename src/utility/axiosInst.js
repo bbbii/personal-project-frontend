@@ -7,6 +7,11 @@ const axiosInst = axios.create({
   timeout: 2500,
 });
 
+const axiosInstToApi = axios.create({
+  baseURL: "https://api.tosspayments.com",
+  timeout: 2500,
+});
+
 const springAxiosInst = axiosInst;
 
-export default { axiosInst, springAxiosInst };
+export default { axiosInst, springAxiosInst, axiosInstToApi };

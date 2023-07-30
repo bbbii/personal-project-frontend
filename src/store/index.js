@@ -4,6 +4,7 @@ import Vuex from "vuex";
 import accountModule from "./account/AccountModule.js";
 import productModule from "./product/ProductModule.js";
 import cartModule from "./cart/CartModule.js";
+import paymentModule from "./payment/PaymentModule.js";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,7 @@ const store = new Vuex.Store({
     accountModule: accountModule,
     productModule: productModule,
     cartModule: cartModule,
+    paymentModule: paymentModule,
   },
 });
 
