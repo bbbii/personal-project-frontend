@@ -1,50 +1,48 @@
 <template>
-  <v-row>
-    <v-col cols="12">
-      <swiper class="swiper" :options="swiperOption">
-        <swiper-slide><img class="image" src="@/assets/apple.png" /></swiper-slide>
-        <swiper-slide><img class="image" src="@/assets/grape.png" /></swiper-slide>
-        <swiper-slide><img class="image" src="@/assets/gyul.png" /></swiper-slide>
-        <swiper-slide><img class="image" src="@/assets/watermelon.png" /></swiper-slide>
-        <swiper-slide><img class="image" src="@/assets/mango.png" /></swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
-        <!-- pagination  -->
-
-        <div class="swiper-button-prev" slot="button-prev"></div>
-        <div class="swiper-button-next" slot="button-next"></div>
-        <!-- navigation  -->
-      </swiper>
-    </v-col>
-  </v-row>
+  <div class="swiper-container">
+    <swiper :options="swiperOptions">
+      <swiper-slide v-for="(image, index) in images" :key="index">
+        <img :src="image" :alt="'Image ' + (index + 1)" class="image" style="object-fit: contain" />
+      </swiper-slide>
+    </swiper>
+  </div>
 </template>
 
 <script>
 import { Swiper, SwiperSlide } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
+import image1 from "@/assets/mainimage1.jpg";
+import image2 from "@/assets/mainimage2.jpg";
+import image3 from "@/assets/mainimage3.jpg";
+import image4 from "@/assets/mainimage4.jpg";
+import image5 from "@/assets/mainimage5.jpg";
 
 export default {
-  name: "MainForm",
   components: {
     Swiper,
     SwiperSlide,
   },
   data() {
     return {
-      swiperOption: {
-        slidesPerView: 1,
-        spaceBetween: 30,
+      images: [image1, image2, image3, image4, image5],
+      swiperOptions: {
         loop: true,
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
         navigation: {
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
         },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        grabCursor: true,
+        effect: "fade",
+        fadeEffect: {
+          crossFade: true,
+        },
         autoplay: {
-          delay: 2000,
-          disableOnInteraction: true,
+          delay: 3000,
+          disableOnInteraction: false,
         },
       },
     };
@@ -55,6 +53,6 @@ export default {
 <style scoped>
 .image {
   max-width: 100%;
-  height: auto;
+  height: 100%;
 }
 </style>

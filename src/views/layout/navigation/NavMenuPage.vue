@@ -3,10 +3,10 @@
     <v-app-bar class="z-index" color="dark" app dark>
       <v-app-bar-nav-icon @click="navigation_drawer = !navigation_drawer" />
       <v-btn @click="goToHome">
-        <v-img class="mx-2" src="@/assets/apple.png" max-height="40" max-width="40" contain>
+        <v-img class="mx-2" src="@/assets/mainlogo.png" max-height="40" max-width="40" contain>
         </v-img>
         <v-toolbar-title class="text-uppercase text--darken-4">
-          <span>PROJECT</span>
+          <span>과일가게</span>
         </v-toolbar-title>
       </v-btn>
 
@@ -45,7 +45,6 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">사이드바</v-list-item-title>
-          <v-list-item-subtitle>페이지 기능</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
@@ -76,7 +75,10 @@ export default {
   data() {
     return {
       navigation_drawer: false,
-      links: [{ icon: "mdi-home", text: "Home", route: "/" }],
+      links: [
+        { icon: "mdi-home", text: "Home", route: "/" },
+        { icon: "mdi-list-box-outline", text: "상품 목록", route: "/product-list" },
+      ],
     };
   },
   computed: {
