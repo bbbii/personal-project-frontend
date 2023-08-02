@@ -1,13 +1,13 @@
 name: Deploy
 
-# on:
-#   repository_dispatch:
-#     types: [CI_TEST_FINISH_TRIGGER]
-
 on:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types: [CI_TEST_FINISH_TRIGGER]
+
+# on:
+#   push:
+#     branches:
+#       - main
 
 jobs:
   build:
