@@ -31,7 +31,7 @@ export default {
     try {
       this.returnedPaymentObject = await this.requestPaymentRequestToSpring(redirectedData);
       console.log("결제 승인 요청 성공");
-      // console.log(this.returnedPaymentObject);
+      console.log(this.returnedPaymentObject);
     } catch (error) {
       console.error("payment API 요청 실패");
     }

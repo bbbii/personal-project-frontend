@@ -6,7 +6,6 @@ import HomeView from "../views/HomeView.vue";
 import accountRoutes from "./account";
 import productRoutes from "./product";
 import cartRoutes from "./cart";
-import awsSdkRoutes from "./aws";
 
 import TosspayHome from "@/views/payment/TosspayHome.vue";
 import SuccessPage from "@/views/payment/SuccessPage.vue";
@@ -23,7 +22,6 @@ const routes = [
   ...accountRoutes,
   ...productRoutes,
   ...cartRoutes,
-  ...awsSdkRoutes,
   {
     path: "/tosspay",
     name: "Home",

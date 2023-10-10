@@ -14,6 +14,7 @@ export default {
       .post("/v1/payments/confirm", { paymentKey, orderId, amount }, { headers })
       .then((res) => {
         console.log("payment 요청 완료");
+        console.log(res.data);
         return res.data;
       })
       .catch(() => {

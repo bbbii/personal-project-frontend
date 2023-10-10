@@ -156,6 +156,10 @@ export default {
         this.selectedImage = null;
       }
     },
+      awsBucketName: "vue-s3-3737",
+      awsBucketRegion: "ap-northeast-2",
+      awsIdentityPoolId: "ap-northeast-2:80a79c65-d48c-4b8e-88d8-229292796a41",
+
     getImageToS3(imageName) {
       return `https://vue-s3-3737.s3.ap-northeast-2.amazonaws.com/${imageName}`;
     },
